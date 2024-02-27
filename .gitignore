@@ -40,7 +40,7 @@ FloodPredict/*.tsbuildinfo
 # api
 FloodPredictAPI/FloodPredictAPI/bin
 FloodPredictAPI/FloodPredictAPI/obj
-FloodPredictAPI/FloodPredictAPI/Properties
-FloodPredictAPI/FloodPredictAPI.sln
+FloodPredictAPI/.vs
+FloodPredictAPI/FloodPredictAPI/Properties/PublishProfiles
 FloodPredictAPI/FloodPredictAPI/appsettings.Development.json
 FloodPredictAPI/FloodPredictAPI/FloodPredictAPI.user

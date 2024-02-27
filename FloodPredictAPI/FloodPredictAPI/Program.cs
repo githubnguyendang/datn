@@ -6,6 +6,7 @@ using FloodPredictAPI.Data;
 using System.Text;
 using System.Text.Json.Serialization;
 using FloodPredictAPI.Service;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -99,7 +100,7 @@ services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:3000")
+        builder.WithOrigins("http://localhost:3000", "https://datn-gold.vercel.app/")
                .AllowAnyMethod()
                .AllowAnyHeader();
     });
@@ -132,5 +133,23 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AspNetUsers>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AspNetRoles>>();
+
+        await dbContext.Database.MigrateAsync();
+        await SeedData.InitializeAsync(dbContext, userManager, roleManager);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error during database seeding: {ex.Message}");
+    }
+}
 
 app.Run();

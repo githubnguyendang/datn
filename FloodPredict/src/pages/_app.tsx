@@ -1,10 +1,10 @@
 // ** Next Imports
 import Head from 'next/head'
-import { Router } from 'next/router'
+import { Router, useRouter } from 'next/router'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
 
-// import { useEffect } from 'react'
+import { useEffect } from 'react'
 
 // ** Loader Import
 import NProgress from 'nprogress'
@@ -58,18 +58,18 @@ const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
   // ** Hooks
-  // const router = useRouter()
+  const router = useRouter()
 
-  // useEffect(() => {
-  //   if (typeof window !== 'undefined') {
-  //     // Kiểm tra trạng thái đăng nhập ở đây
-  //     const loggedIn = sessionStorage.getItem('authToken');
-  //     if (!loggedIn && router.pathname !== '/pages/login') {
-  //       router.push('/pages/login')
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [router.pathname]);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Kiểm tra trạng thái đăng nhập ở đây
+      const loggedIn = sessionStorage.getItem('authToken');
+      if (!loggedIn && router.pathname !== '/pages/login') {
+        router.push('/pages/login')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname]);
 
   // Variables
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
@@ -80,9 +80,9 @@ const App = (props: ExtendedAppProps) => {
         <title>{themeConfig.templateName}</title>
         <meta
           name='description'
-          content={`${themeConfig.templateName} - Thiết kế và phát triển bởi Viện Thủy văn Môi trường và Biến đổi khí hậu`}
+          content={`${themeConfig.templateName} - Đồ án tốt nghiệp - AI Dự báo lũ - Nguyễn Tấn Đăng`}
         />
-        <meta name='keywords' content='Viện Thủy văn Môi trường và Biến đổi khí hậu' />
+        <meta name='keywords' content='AI Dự báo lũ - Nguyễn Tấn Đăng' />
         <meta name='viewport' content='initial-scale=1, width=device-width' />
       </Head>
 

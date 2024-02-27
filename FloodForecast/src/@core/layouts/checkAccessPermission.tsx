@@ -5,9 +5,6 @@ interface DecodedToken {
 }
 
 export const checkAccessPermission = (linkControl: string | undefined, action: string | undefined) => {
-
-    return true;
-
     if (typeof sessionStorage !== 'undefined') {
 
         const token = sessionStorage.getItem('authToken') || '';

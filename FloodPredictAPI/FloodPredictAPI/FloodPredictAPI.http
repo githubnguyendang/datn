@@ -1,0 +1,6 @@
+@FloodPredictAPI_HostAddress = http://localhost:5290
+
+GET {{FloodPredictAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

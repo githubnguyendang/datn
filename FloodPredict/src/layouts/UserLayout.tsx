@@ -1,0 +1,81 @@
+// ** React Imports
+import { ReactNode } from 'react'
+
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import { Theme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+
+// ** Layout Imports
+// !Do not remove this Layout import
+import VerticalLayout from 'src/@core/layouts/VerticalLayout'
+
+// ** Navigation Imports
+import VerticalNavItems from 'src/navigation/vertical'
+
+// ** Component Import
+import VerticalAppBarContent from './components/vertical/AppBarContent'
+
+// ** Hook Import
+import { useSettings } from 'src/@core/hooks/useSettings'
+
+interface Props {
+  children: ReactNode
+}
+
+const UserLayout = ({ children }: Props) => {
+  // ** Hooks
+  const { settings, saveSettings } = useSettings()
+
+  /**
+   *  The below variable will hide the current layout menu at given screen size.
+   *  The menu will be accessible from the Hamburger icon only (Vertical Overlay Menu).
+   *  You can change the screen size from which you want to hide the current layout menu.
+   *  Please refer useMediaQuery() hook: https://mui.com/components/use-media-query/,
+   *  to know more about what values can be passed to this hook.
+   *  ! Do not change this value unless you know what you are doing. It can break the template.
+   */
+  const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
+
+  const UpgradeToProImg = () => {
+    return (
+      <Box sx={{ mx: 'auto', borderTop: '1px solid #4b545c' }}>
+        <span>
+          <p className='design--team'>
+            <span>
+              <i>Phát triển bởi</i>
+              <br />
+              <span> Nguyễn Tấn Đăng - 20210869P </span>
+              <br />
+              <span> 0346.907.243 - Dang.NT210869P@sis.hust.edu.vn</span>
+            </span>
+          </p>
+        </span>
+      </Box>
+    )
+  }
+
+  return (
+    <VerticalLayout
+      hidden={hidden}
+      settings={settings}
+      saveSettings={saveSettings}
+      verticalNavItems={VerticalNavItems()} // Navigation Items
+      afterVerticalNavMenuContent={UpgradeToProImg}
+      verticalAppBarContent={(
+        props // AppBar Content
+      ) => (
+        <VerticalAppBarContent
+          hidden={hidden}
+          settings={settings}
+          saveSettings={saveSettings}
+          toggleNavVisibility={props.toggleNavVisibility}
+        />
+      )}
+    >
+      {children}
+    </VerticalLayout>
+  )
+}
+
+export default UserLayout

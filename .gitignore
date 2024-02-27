@@ -1,46 +1,46 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-FloodPredict/node_modules
-FloodPredict/.pnp
-FloodPredict/.pnp.js
+FloodForecast/node_modules
+FloodForecast/.pnp
+FloodForecast/.pnp.js
 
 # testing
-FloodPredict/coverage
+FloodForecast/coverage
 
 # next.js
-FloodPredict/.next/
-FloodPredict/out/
+FloodForecast/.next/
+FloodForecast/out/
 
 # production
-FloodPredict/build
+FloodForecast/build
 
 # misc
-FloodPredict/.DS_Store
-FloodPredict/*.pem
+FloodForecast/.DS_Store
+FloodForecast/*.pem
 
 # debug
-FloodPredict/npm-debug.log*
-FloodPredict/yarn-debug.log*
-FloodPredict/yarn-error.log*
+FloodForecast/npm-debug.log*
+FloodForecast/yarn-debug.log*
+FloodForecast/yarn-error.log*
 
 # local env files
-FloodPredict/.env.local
-FloodPredict/.env.development.local
-FloodPredict/.env.test.local
-FloodPredict/.env.production.local
+FloodForecast/.env.local
+FloodForecast/.env.development.local
+FloodForecast/.env.test.local
+FloodForecast/.env.production.local
 
 # vercel
-FloodPredict/.vercel
+FloodForecast/.vercel
 
 # typescript
-FloodPredict/*.tsbuildinfo
+FloodForecast/*.tsbuildinfo
 
 
 # api
-FloodPredictAPI/FloodPredictAPI/bin
-FloodPredictAPI/FloodPredictAPI/obj
-FloodPredictAPI/.vs
-FloodPredictAPI/FloodPredictAPI/Properties/PublishProfiles
-FloodPredictAPI/FloodPredictAPI/appsettings.Development.json
-FloodPredictAPI/FloodPredictAPI/FloodPredictAPI.user
+FloodForecastAPI/FloodForecastAPI/bin
+FloodForecastAPI/FloodForecastAPI/obj
+FloodForecastAPI/.vs
+FloodForecastAPI/FloodForecastAPI/Properties/PublishProfiles
+FloodForecastAPI/FloodForecastAPI/appsettings.Development.json
+FloodForecastAPI/FloodForecastAPI/FloodForecastAPI.user

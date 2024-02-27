@@ -100,7 +100,7 @@ services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:3000", "https://datn-gold.vercel.app/")
+        builder.WithOrigins("http://localhost:3000", "https://flood-forecast.vercel.app", "https://flood-forecast-githubnguyendang.vercel.app")
                .AllowAnyMethod()
                .AllowAnyHeader();
     });

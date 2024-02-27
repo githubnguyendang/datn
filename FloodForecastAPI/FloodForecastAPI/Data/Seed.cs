@@ -39,7 +39,7 @@ namespace FloodForecastAPI.Data
 
                 var guest = new AspNetUsers { UserName = "guest", IsDeleted = false };
                 await userManager.CreateAsync(guest, "guest");
-                await userManager.AddToRoleAsync(admin, "Default");
+                await userManager.AddToRoleAsync(guest, "Default");
             }
         }
 

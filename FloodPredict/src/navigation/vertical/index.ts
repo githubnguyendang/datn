@@ -39,21 +39,25 @@ const navigation = (): VerticalNavItemsType => {
         {
           title: 'Nhóm người dùng',
           icon: PeopleAltOutlined,
+          primaryPath: 'role',
           path: '/system/role'
         },
         {
           title: 'Người dùng',
           icon: AccountCogOutline,
+          primaryPath: 'user',
           path: '/system/user'
         },
         {
           title: 'Trang truy cập',
           icon: Tv,
+          primaryPath: 'dashboard',
           path: '/system/dashboard'
         },
         {
           title: 'Các chức năng',
           icon: Functions,
+          primaryPath: 'function',
           path: '#'
         },
       ]
@@ -65,11 +69,13 @@ const navigation = (): VerticalNavItemsType => {
         {
           title: 'Nhóm người dùng',
           icon: PeopleAltOutlined,
+          primaryPath: 'role',
           path: '/permission/role'
         },
         {
           title: 'Người dùng',
           icon: AccountCogOutline,
+          primaryPath: 'user',
           path: '/permission/user'
         }
       ]

@@ -84,16 +84,16 @@ const UserInfo = () => {
                 <Grid container>
                     <Grid item xs={12} md={12}>
                         <Grid item xs={12} md={12} sx={{ my: 3 }}>
-                            <TextField size='medium' type='text' fullWidth sx={{ my: 3 }} label='Tài khoản' placeholder='' value={user?.userName} onChange={handleChange('userName')} />
+                            <TextField size='medium' type='text' fullWidth sx={{ my: 3 }} label='Tài khoản' placeholder='' value={user?.userName || ''} onChange={handleChange('userName')} />
                         </Grid>
                         <Grid item xs={12} md={12} sx={{ my: 3 }}>
-                            <TextField size='medium' type='text' fullWidth label='Họ tên' placeholder='' value={user?.fullName} onChange={handleChange('fullName')} />
+                            <TextField size='medium' type='text' fullWidth label='Họ tên' placeholder='' value={user?.fullName || ''} onChange={handleChange('fullName')} />
                         </Grid>
                         <Grid item xs={12} md={12} sx={{ my: 3 }}>
-                            <TextField size='medium' type='email' fullWidth label='Email' placeholder='' value={user?.email} onChange={handleChange('email')} />
+                            <TextField size='medium' type='email' fullWidth label='Email' placeholder='' value={user?.email || ''} onChange={handleChange('email')} />
                         </Grid>
                         <Grid item xs={12} md={12} sx={{ my: 3 }}>
-                            <TextField size='medium' type='text' fullWidth label='Số điện thoại' placeholder='' value={user?.phoneNumber} onChange={handleChange('phoneNumber')} />
+                            <TextField size='medium' type='text' fullWidth label='Số điện thoại' placeholder='' value={user?.phoneNumber || ''} onChange={handleChange('phoneNumber')} />
                         </Grid>
                     </Grid >
                     <Grid item xs={12} md={12} display={'flex'} justifyContent={'end'} >

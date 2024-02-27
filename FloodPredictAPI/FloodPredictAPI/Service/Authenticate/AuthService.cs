@@ -72,7 +72,8 @@ namespace FloodPredictAPI.Service
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user!.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.UserName ?? ""),
+                new Claim("id", user.Id),
+                new Claim(ClaimTypes.Name, user.UserName ?? "")
             };
 
             var addedPermissions = new HashSet<string>(); // Sử dụng HashSet để lưu trữ các quyền đã thêm vào danh sách

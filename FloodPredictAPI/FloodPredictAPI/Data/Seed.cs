@@ -36,6 +36,10 @@ namespace FloodPredictAPI.Data
                 var admin = new AspNetUsers { UserName = "admin", IsDeleted = false };
                 await userManager.CreateAsync(admin, "admin");
                 await userManager.AddToRoleAsync(admin, "Administrator");
+
+                var guest = new AspNetUsers { UserName = "guest", IsDeleted = false };
+                await userManager.CreateAsync(guest, "guest");
+                await userManager.AddToRoleAsync(admin, "Default");
             }
         }
 

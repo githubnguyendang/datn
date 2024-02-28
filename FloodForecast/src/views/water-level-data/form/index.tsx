@@ -7,11 +7,12 @@ import WaterLevelDataFieldset from './water-level-data-fieldset';
 
 interface FormProps {
     data: any;
+    station: any;
     closeDialogs: () => void;
     setPostSuccess?: (value: boolean) => void;
 }
 
-const Form: React.FC<FormProps> = ({ data, closeDialogs, setPostSuccess }) => {
+const Form: React.FC<FormProps> = ({ data, station, closeDialogs, setPostSuccess }) => {
 
     //WaterLevelData
     const [WaterLevelDataData, setWaterLevelDataData] = useState<any>(data);
@@ -51,7 +52,7 @@ const Form: React.FC<FormProps> = ({ data, closeDialogs, setPostSuccess }) => {
         <form>
             <Grid container gap={3}>
                 <Grid item xs={12}>
-                    <WaterLevelDataFieldset data={data} onChange={handleWaterLevelDataChange} />
+                    <WaterLevelDataFieldset data={data} station={station} onChange={handleWaterLevelDataChange} />
                 </Grid>
             </Grid>
 
@@ -66,10 +67,11 @@ const Form: React.FC<FormProps> = ({ data, closeDialogs, setPostSuccess }) => {
 interface FormWaterLevelDataProps {
     isEdit: boolean;
     data?: any;
+    station?: any;
     setPostSuccess?: (value: boolean) => void;
 }
 
-const FormWaterLevelData: React.FC<FormWaterLevelDataProps> = ({ isEdit, data, setPostSuccess }) => {
+const FormWaterLevelData: React.FC<FormWaterLevelDataProps> = ({ isEdit, data, station, setPostSuccess }) => {
     const formTitle = isEdit ? 'Sửa thông tin lưu vực' : 'Thêm mới thông tin lưu vực';
 
     return (
@@ -79,7 +81,7 @@ const FormWaterLevelData: React.FC<FormWaterLevelDataProps> = ({ isEdit, data, s
                     {isEdit ? (
                         <IconButton onClick={
                             () =>
-                                openDialogs(<Form data={data} closeDialogs={closeDialogs} setPostSuccess={setPostSuccess} />, formTitle)
+                                openDialogs(<Form data={data} station={station} closeDialogs={closeDialogs} setPostSuccess={setPostSuccess} />, formTitle)
                         }>
                             < EditNote
                                 className='tableActionBtn'
@@ -91,7 +93,7 @@ const FormWaterLevelData: React.FC<FormWaterLevelDataProps> = ({ isEdit, data, s
                             size="small"
                             startIcon={<Add />}
                             onClick={() =>
-                                openDialogs(<Form data={data} closeDialogs={closeDialogs} setPostSuccess={setPostSuccess} />, formTitle)
+                                openDialogs(<Form data={data} station={station} closeDialogs={closeDialogs} setPostSuccess={setPostSuccess} />, formTitle)
                             }
                         >
                             Thêm mới

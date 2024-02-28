@@ -11,4 +11,9 @@
         public double alarm_level3 { get; set; }
         public List<WaterLevelDataDto> water_level_data { get; set; }
     }
+
+    public class FormFilterStation
+    {
+        public string station_name { get; set; }
+    }
 }

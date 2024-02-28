@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, Paper, Toolbar } from '@mui/material';
+import { Box, Grid, Paper, TextField, Toolbar } from '@mui/material';
 import FormStations from './form';
 import DeleteData from 'src/@core/components/delete-data';
 import { getData } from 'src/api/axios';
 import TableComponent, { TableColumn } from 'src/@core/components/table';
+import ViewData from './view-data';
 
 const Station = () => {
     const [resData, setResData] = useState([]);
@@ -33,16 +34,18 @@ const Station = () => {
         },
 
         //Action
-        {
-            id: 'actions', align: 'center', label: 'Thao tác', minWidth: 120, rowspan: 2
-        },
+        { id: 'actions', align: 'center', label: 'Thao tác', minWidth: 120, rowspan: 2 },
     ];
+
+    const [paramFilter, setParamFilter] = useState({
+        station_name: ''
+    });
 
     useEffect(() => {
         const getDataStation = async () => {
             try {
                 setLoading(true);
-                const data = await getData('Station/list');
+                const data = await getData('Station/list', paramFilter);
                 setResData(data);
             } catch (error) {
                 setResData([]);
@@ -51,21 +54,32 @@ const Station = () => {
             }
         };
         getDataStation();
-    }, [postSuccess]);
+    }, [paramFilter, postSuccess]);
 
     return (
         <Paper elevation={3} sx={{ py: 5, px: 15 }}>
             <Toolbar variant="dense">
                 <Grid container justifyContent={'end'} >
                     <Grid item>
+                        <TextField
+                            sx={{ p: 0 }}
+                            size="small"
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Tên trạm..."
+                            onChange={(e: any) => setParamFilter({ ...paramFilter, station_name: e.target.value })}
+                        />
+                    </Grid>
+                    <Grid item>
                         <FormStations setPostSuccess={handlePostSuccess} isEdit={false} />
                     </Grid>
                 </Grid>
             </Toolbar>
             <TableComponent columns={columnsTable} rows={resData} loading={loading} actions={(e: any) => (
-                <Box>
+                <Box display={'flex'}>
+                    <ViewData data={e} />
                     <FormStations isEdit={true} data={e} setPostSuccess={handlePostSuccess} />
-                    <DeleteData url={'LuuVucSong'} data={e} setPostSuccess={handlePostSuccess} />
+                    <DeleteData url={'Station'} data={e} setPostSuccess={handlePostSuccess} />
                 </Box>
             )} />
         </Paper>

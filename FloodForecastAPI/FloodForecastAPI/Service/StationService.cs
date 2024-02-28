@@ -23,7 +23,7 @@ namespace FloodForecastAPI.Service
         }
 
         // Method to retrieve a list of CT_ThongTin entities based on specified filters
-        public async Task<List<StationDto>> GetAllAsync()
+        public async Task<List<StationDto>> GetAllAsync(FormFilterStation filter)
         {
             _context.Database.SetCommandTimeout(120);
 
@@ -34,10 +34,10 @@ namespace FloodForecastAPI.Service
                 .AsQueryable();
 
             // Apply filters based on input parameters
-            //if (!string.IsNullOrEmpty(TenCT))
-            //{
-            //    query = query.Where(ct => ct.TenCT!.Contains(TenCT));
-            //}
+            if (!string.IsNullOrEmpty(filter.station_name))
+            {
+                query = query.Where(x => x.name!.Contains(filter.station_name));
+            }
 
             var stations = await query.ToListAsync();
 
@@ -80,7 +80,7 @@ namespace FloodForecastAPI.Service
 
         private async Task PopulateDataAsync(StationDto dto)
         {
-            dto.water_level_data = _mapper.Map<List<WaterLevelDataDto>>(await _context.WaterLevelData.Where(x => x.station_id == dto.id).OrderByDescending(e => e.date).Take(10).ToListAsync());
+            dto.water_level_data = _mapper.Map<List<WaterLevelDataDto>>(await _context.WaterLevelData.Where(x => x.station_id == dto.id).OrderByDescending(e => e.date).ToListAsync());
         }
 
         // Method to save or update a CT_ThongTin entity
@@ -122,11 +122,10 @@ namespace FloodForecastAPI.Service
         {
             // Retrieve an existing item based on Id
             var existingItem = await _context.Station!.FirstOrDefaultAsync(d => d.id == Id);
-            var currentUser = await _userManager.GetUserAsync(_httpContext.HttpContext!.User);
 
             if (existingItem == null) { return false; } // If the item doesn't exist, return false
 
-            _context.Station!.Update(existingItem);
+            _context.Station!.Remove(existingItem);
 
             // Save changes to the database
             await _context.SaveChangesAsync();

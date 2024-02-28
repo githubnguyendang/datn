@@ -27,7 +27,7 @@ namespace FloodForecastAPI.Service
         {
             var query = _context.WaterLevelData!
                 .Include(x => x.station)
-                .Where(x => x.station_id == station_id && x.date >= s_date && x.date <= e_date)
+                .Where(x => x.station_id == station_id && x.date >= s_date && x.date <= e_date.AddHours(59).AddMinutes(59).AddSeconds(59))
                 .OrderByDescending(x => x.date)
                 .AsQueryable();
 
@@ -78,11 +78,10 @@ namespace FloodForecastAPI.Service
         {
             // Retrieve an existing item based on Id
             var existingItem = await _context.WaterLevelData!.FirstOrDefaultAsync(d => d.id == Id);
-            var currentUser = await _userManager.GetUserAsync(_httpContext.HttpContext!.User);
 
             if (existingItem == null) { return false; } // If the item doesn't exist, return false
 
-            _context.WaterLevelData!.Update(existingItem);
+            _context.WaterLevelData!.Remove(existingItem);
 
             // Save changes to the database
             await _context.SaveChangesAsync();

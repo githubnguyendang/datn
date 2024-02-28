@@ -21,9 +21,9 @@ namespace FloodForecastAPI.Controllers
 
         [HttpGet]
         [Route("list")]
-        public async Task<List<StationDto>> GetAllData()
+        public async Task<List<StationDto>> GetAllData([FromQuery] FormFilterStation filter)
         {
-            return await _service.GetAllAsync();
+            return await _service.GetAllAsync(filter);
         }
 
         [HttpGet]

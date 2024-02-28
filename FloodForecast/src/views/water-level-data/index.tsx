@@ -37,7 +37,7 @@ const WaterLevelData = () => {
         const getDataWaterLevelData = async () => {
             try {
                 setLoading(true);
-                const data = await getData(`WaterLevelData/1/${dayjs(new Date("2020-1-1")).format("YYYY-MM-DD")}/${dayjs(new Date("2022-12-31")).format("YYYY-MM-DD")}`);
+                const data = await getData(`WaterLevelData/1/${dayjs(new Date("2020-1-1")).format("YYYY-MM-DD")}/${dayjs(new Date()).format("YYYY-MM-DD")}`);
                 setResData(data);
             } catch (error) {
                 setResData([]);
@@ -60,7 +60,7 @@ const WaterLevelData = () => {
             <TableComponent columns={columnsTable} rows={resData} loading={loading} rowperpage={25} pagination actions={(e: any) => (
                 <Box>
                     <FormWaterLevelDatas isEdit={true} data={e} setPostSuccess={handlePostSuccess} />
-                    <DeleteData url={'LuuVucSong'} data={e} setPostSuccess={handlePostSuccess} />
+                    <DeleteData url={'WaterLevelData'} data={e} setPostSuccess={handlePostSuccess} />
                 </Box>
             )} />
         </Paper>

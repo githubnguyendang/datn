@@ -4,9 +4,11 @@ import React, { useState, ChangeEvent, useEffect } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { getData } from 'src/api/axios';
+import { useRouter } from 'next/router';
 
 interface WaterLevelDataProps {
     data?: WaterLevelDataState; // Thêm prop data để truyền dữ liệu từ ngoài vào
+    station?: any;
     onChange: (data: WaterLevelDataState) => void;
 }
 
@@ -18,17 +20,20 @@ interface WaterLevelDataState {
     amount_rain: number;
 }
 
-const WaterLevelDataFieldset: React.FC<WaterLevelDataProps> = ({ data, onChange }) => {
+const WaterLevelDataFieldset: React.FC<WaterLevelDataProps> = ({ data, station, onChange }) => {
+
     const [WaterLevelData, setWaterLevelData] = useState<WaterLevelDataState>({
         id: data?.id || 0,
-        station_id: data?.station_id || 0,
+        station_id: data?.station_id || station?.id || 0,
         date: dayjs(data?.date) || null,
         water_level: data?.water_level || 0,
         amount_rain: data?.amount_rain || 0,
     });
 
     const [fetching, setFetching] = useState(false);
-    const [station, setStation] = useState([]);
+    const [stations, setStation] = useState([]);
+
+    const router = useRouter();
 
     // Sử dụng useEffect để cập nhật dữ liệu khi prop data thay đổi
     useEffect(() => {
@@ -65,10 +70,12 @@ const WaterLevelDataFieldset: React.FC<WaterLevelDataProps> = ({ data, onChange 
                     <CircularProgress size={20} />
                 ) : (
                     <Autocomplete
+                        disabled={router.pathname === '/station'}
                         onChange={(st: any) => setWaterLevelData({ ...WaterLevelData, station_id: st.id })}
                         size="small"
-                        options={station}
+                        options={stations}
                         getOptionLabel={(option: any) => option.name}
+                        value={stations.find((option: any) => option.id === WaterLevelData.station_id) || null}
                         renderInput={(params) => (
                             <TextField
                                 {...params}

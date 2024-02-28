@@ -25,11 +25,12 @@ const navigation = (): VerticalNavItemsType => {
           primaryPath: 'station',
           path: '/station'
         },
-        {
-          title: 'Dữ liệu mực nước',
-          primaryPath: 'water-level-data',
-          path: '/water-level-data'
-        },
+        
+        // {
+        //   title: 'Dữ liệu mực nước',
+        //   primaryPath: 'water-level-data',
+        //   path: '/water-level-data'
+        // },
       ]
     },
     {

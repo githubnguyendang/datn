@@ -7,6 +7,7 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts';
 import { ApexOptions } from "apexcharts";
 import { getData } from 'src/api/axios'
 import dayjs from 'dayjs'
+import apiUrl from 'src/api/config'
 
 interface FormDataProps {
     data: any
@@ -18,7 +19,8 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
 
     const [wl_data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [wlData, setWlData] = useState({ water_level: [], date: [] });
+    const [predictData, setPredictData] = useState<any>({ water_level: [], water_level_predict: [], date: [] });
+
     const isMounted = useRef(true);
 
     const getDataStations = async () => {
@@ -27,18 +29,54 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
             const fetch_data = await getData(`WaterLevelData/${data.id}/${dayjs(new Date("2020-1-1")).format("YYYY-MM-DD")}/${dayjs(new Date("2022-12-31")).format("YYYY-MM-DD")}`);
             if (isMounted.current) {
                 setData(fetch_data);
-
-                setWlData({
-                    water_level: fetch_data.slice(0, 60).map((entry: { water_level: any }) => entry.water_level).reverse(),
-                    date: fetch_data.slice(0, 60).map((entry: { date: any }) => dayjs(entry.date).format('DD-MM-YYYY')).reverse()
-                });
             }
+
+            getWaterLevelPrediction()
+                .then(data => {
+
+                    // Make a copy of the water_level array
+                    const modifiedWaterLevel = [...data.water_level];
+
+                    // Check if the array has at least two elements
+                    if (modifiedWaterLevel.length >= 3) {
+                        // Set the last two elements to null
+                        modifiedWaterLevel[modifiedWaterLevel.length - 1] = null;
+                        modifiedWaterLevel[modifiedWaterLevel.length - 2] = null;
+                        modifiedWaterLevel[modifiedWaterLevel.length - 3] = null;
+                    }
+                    setPredictData({
+                        water_level: modifiedWaterLevel.slice(-180),
+                        water_level_predict: data.water_level_predict.slice(-180),
+                        date: data.dates.slice(-180).map((entry: { date: any }) => dayjs(entry.date).format('DD-MM-YYYY'))
+                    })
+                })
+                .catch(error => {
+                    console.error('There was an error!', error);
+                });
         } catch (error) {
             console.error(error);
         } finally {
             setLoading(false);
         }
     };
+
+    async function getWaterLevelPrediction() {
+        const response = await fetch(`${apiUrl}/FloodForecast/predict/${data.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                // Dữ liệu bạn muốn gửi, nếu có
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+
+        return response.json(); // or await response.json() if you want to wait for the data
+    }
 
     useEffect(() => {
         isMounted.current = true;
@@ -61,7 +99,6 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
     ]
 
     //For chart
-
 
     const options: ApexOptions = {
         chart: {
@@ -86,7 +123,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
             },
         },
         xaxis: {
-            categories: wlData.date,
+            categories: predictData.date,
             title: {
                 text: 'Ngày'
             }
@@ -94,9 +131,12 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
         yaxis: {
             title: {
                 text: 'Mực nước(cm)'
+            },
+            labels: {
+                formatter: (value) => { return value.toFixed(2) }
             }
         },
-
+        colors: ['#0077df', '#f00'],
 
         annotations: {
             yaxis: [
@@ -151,8 +191,6 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
             count: 3,
             strokeWidth: 5
         },
-
-        colors: ['#008FFB'],
         tooltip: {
             enabled: true,
             onDatasetHover: {
@@ -173,7 +211,11 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
     const series = [
         {
             name: "Mực nước",
-            data: wlData.water_level
+            data: predictData.water_level
+        },
+        {
+            name: "Mực nước dự báo",
+            data: predictData.water_level_predict
         },
     ];
 

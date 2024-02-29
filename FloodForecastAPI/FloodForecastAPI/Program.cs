@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using FloodForecastAPI.Service;
 using Microsoft.EntityFrameworkCore;
+using FloodForecastAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -26,6 +27,8 @@ services.AddScoped<PermissionService>();
 
 services.AddScoped<StationService>();
 services.AddScoped<WaterLevelDataService>();
+
+services.AddScoped<FloodForecastService>();
 
 services.AddIdentity<AspNetUsers, AspNetRoles>(options =>
 {

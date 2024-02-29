@@ -44,3 +44,9 @@ FloodForecastAPI/.vs
 FloodForecastAPI/FloodForecastAPI/Properties/PublishProfiles
 FloodForecastAPI/FloodForecastAPI/appsettings.Development.json
 FloodForecastAPI/FloodForecastAPI/FloodForecastAPI.user
+
+FloodForecastAPI/FloodForecastML/bin
+FloodForecastAPI/FloodForecastML/obj
+FloodForecastAPI/FloodForecastML/Properties/PublishProfiles
+FloodForecastAPI/FloodForecastML/appsettings.Development.json
+FloodForecastAPI/FloodForecastML/FloodForecastAPI.user

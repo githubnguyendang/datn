@@ -133,7 +133,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
                 text: 'Mực nước(cm)'
             },
             labels: {
-                formatter: (value) => { return value.toFixed(2) }
+                formatter: (value) => { return value?.toFixed(2) }
             }
         },
         colors: ['#0077df', '#f00'],

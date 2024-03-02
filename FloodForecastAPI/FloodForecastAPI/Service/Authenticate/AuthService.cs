@@ -221,6 +221,20 @@ namespace FloodForecastAPI.Service
             return false;
         }
 
+        public async Task<bool> CheckAccessPermission(string userName, string linkControl, string action)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null || linkControl == null || action == null) { return false; }
+            if (await _userManager.IsInRoleAsync(user, "Administrator")) return true;
+
+            var dash = _context.Dashboards.Where(x => x.Path == linkControl).FirstOrDefault();
+            if (dash == null) return false;
+            var existingPermission = await _context!.Permissions!.FirstOrDefaultAsync(d => d.FunctionCode.ToLower() == action.ToLower() && d.DashboardId == dash.Id && d.UserId == user.Id);
+            if (existingPermission != null) return true;
+
+            return false;
+        }
+
 
         public async Task<bool> LogoutAsync(HttpContext context)
         {

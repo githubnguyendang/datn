@@ -5,11 +5,34 @@ import DeleteData from 'src/@core/components/delete-data';
 import { getData } from 'src/api/axios';
 import TableComponent, { TableColumn } from 'src/@core/components/table';
 import ViewData from './view-data';
+import { useRouter } from 'next/router';
+import { checkAccessPermission } from 'src/@core/layouts/checkAccessPermission';
 
 const Station = () => {
     const [resData, setResData] = useState([]);
     const [postSuccess, setPostSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+    const routePath = router.pathname;
+    const routeSegment = routePath.split('/')[1];
+
+    const [accessCreate, setAccessCreate] = useState(false);
+    const [accessUpdate, setAccessUpdate] = useState(false)
+    const [accessDelete, setAccessDelete] = useState(false)
+    const [accessViewData, setAccessViewData] = useState(false)
+
+    async function getAccess() {
+        setAccessCreate(await checkAccessPermission(routeSegment, 'CREATE'));
+        setAccessUpdate(await checkAccessPermission(routeSegment, 'EDIT'));
+        setAccessDelete(await checkAccessPermission(routeSegment, 'DELETE'));
+        setAccessViewData(await checkAccessPermission('water-level-data', 'VIEW'));
+    }
+
+    useEffect(() => {
+        getAccess()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const handlePostSuccess = () => {
         setPostSuccess(prevState => !prevState);
@@ -18,7 +41,7 @@ const Station = () => {
     //Init columnTable
     const columnsTable: TableColumn[] = [
         { id: 'id', align: 'center', label: 'ID', minWidth: 90, rowspan: 2 },
-        { id: 'name', align: 'center', label: 'Tên lưu vực', minWidth: 150, rowspan: 2 },
+        { id: 'name', align: 'center', label: 'Tên trạm', minWidth: 150, rowspan: 2 },
         {
             id: '#', align: 'center', label: 'Tọa độ', minWidth: 150, children: [
                 { id: 'x', align: 'center', label: 'X' },
@@ -71,15 +94,16 @@ const Station = () => {
                         />
                     </Grid>
                     <Grid item>
-                        <FormStations setPostSuccess={handlePostSuccess} isEdit={false} />
+                        {accessCreate ? <FormStations setPostSuccess={handlePostSuccess} isEdit={false} /> : null}
+
                     </Grid>
                 </Grid>
             </Toolbar>
             <TableComponent columns={columnsTable} rows={resData} loading={loading} actions={(e: any) => (
                 <Box display={'flex'}>
-                    <ViewData data={e} />
-                    <FormStations isEdit={true} data={e} setPostSuccess={handlePostSuccess} />
-                    <DeleteData url={'Station'} data={e} setPostSuccess={handlePostSuccess} />
+                    {accessViewData ? <ViewData data={e} /> : null}
+                    {accessUpdate ? <FormStations isEdit={true} data={e} setPostSuccess={handlePostSuccess} /> : null}
+                    {accessDelete ? <DeleteData url={'Station'} data={e} setPostSuccess={handlePostSuccess} /> : null}
                 </Box>
             )} />
         </Paper>

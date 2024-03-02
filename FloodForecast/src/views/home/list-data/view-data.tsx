@@ -20,13 +20,14 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
     const [wl_data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [predictData, setPredictData] = useState<any>({ water_level: [], water_level_predict: [], date: [] });
+    const [paramFilter] = useState<any>({ s_d: new Date("2020-1-1"), e_d: new Date("2022-12-31") })
 
     const isMounted = useRef(true);
 
     const getDataStations = async () => {
         try {
             setLoading(true);
-            const fetch_data = await getData(`WaterLevelData/${data.id}/${dayjs(new Date("2020-1-1")).format("YYYY-MM-DD")}/${dayjs(new Date("2022-12-31")).format("YYYY-MM-DD")}`);
+            const fetch_data = await getData(`WaterLevelData/${data.id}/${dayjs(paramFilter.s_d).format("YYYY-MM-DD")}/${dayjs(paramFilter.e_d).format("YYYY-MM-DD")}`);
             if (isMounted.current) {
                 setData(fetch_data);
             }
@@ -224,7 +225,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
         <Grid container spacing={4}>
             <Grid item md={12}>
                 <Paper sx={{ p: 3 }}>
-                    Mực nước tại {data.name}
+                    Mực nước tại {data.name} - Tỉnh Quảng Ngãi
                 </Paper>
             </Grid>
             <Grid item md={4}>

@@ -68,13 +68,13 @@ const MenuNavLink = styled(ListItemButton)<ListItemButtonProps & { component?: E
 
 const MenuNavSection = styled(ListItemButton)<ListItemButtonProps & { component?: ElementType; target?: '_blank' | undefined }>(({ theme }) => ({
   width: '100%',
-  color: `#feef !important`,
+  color: `#fff !important`,
   fontSize: 14,
   textTransform: 'uppercase',
   cursor: "default",
   fontWeight: 'bold',
   padding: theme.spacing(2.25, 3.5),
-  '&.nav-section::after': { 
+  '&.nav-section::after': {
     content: '""',
     position: 'absolute',
     top: 'calc(50% - 5px)',
@@ -146,8 +146,12 @@ const VerticalNavLink = ({ item, settings, navVisible, toggleNavVisibility }: Pr
     }
   }
 
+  async function getPermit() {
+    setHavePermit(await checkAccessPermission(item.primaryPath, 'view'));
+  }
+
   useEffect(() => {
-    setHavePermit(checkAccessPermission(item.primaryPath, 'view'));
+    getPermit()
 
     // Check if any child is active
     const isAnyChildActive = item.children && Array.isArray(item.children) && item.children.some((child): child is NavLink => {
@@ -180,7 +184,7 @@ const VerticalNavLink = ({ item, settings, navVisible, toggleNavVisibility }: Pr
 
     // Level 1 Menu Item with children
     return (
-      <ListItem disablePadding className='nav-link' disabled={item.disabled || false} sx={{ px: '0 !important', display: `${havePermit ? 'block' : 'none'}` }}>
+      <ListItem disablePadding className='nav-link' disabled={item.disabled || false} sx={{ px: '0 !important', display: `${!item.primaryPath || havePermit ? 'block' : 'none'}` }}>
         <Link passHref href={item.path === undefined ? '#' : havePermit ? `${item.path}` : '#'}>
           <MenuNavLink
             component={'a'}
@@ -263,8 +267,8 @@ const VerticalNavLink = ({ item, settings, navVisible, toggleNavVisibility }: Pr
 
     // Level 1 Menu Item without children
     return (
-      <ListItem disablePadding className='nav-link' disabled={item.disabled || false} sx={{ px: '0 !important', display: `${havePermit ? 'block' : 'none'}` }}>
-        <Link passHref href={item.path === undefined ? '#' : havePermit ? `${item.path}` : '#'}>
+      <ListItem disablePadding className='nav-link' disabled={item.disabled || false} sx={{ px: '0 !important', display: `${item.path == '/' || havePermit ? 'block' : 'none'}` }}>
+        <Link passHref href={item.path === undefined ? '#' : item.path == '/' || havePermit ? `${item.path}` : '#'}>
           <MenuNavLink
             component={'a'}
             className={`${isNavLinkActive(item.path) ? 'active' : ''} menu__item`}

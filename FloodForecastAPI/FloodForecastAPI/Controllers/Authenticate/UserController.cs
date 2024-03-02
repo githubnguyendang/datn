@@ -20,9 +20,9 @@ namespace FloodForecastAPI.Controllers
 
         [HttpGet]
         [Route("list")]
-        public async Task<List<UserDto>> GetAllUsers()
+        public async Task<List<UserDto>> GetAllUsers([FromQuery] FormFilterUser filter)
         {
-            return await _service.GetAllUsersAsync();
+            return await _service.GetAllUsersAsync(filter);
         }
 
         [HttpGet]

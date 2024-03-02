@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FloodForecastAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class updateDB : Migration
+    public partial class InitDbase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,7 +56,10 @@ namespace FloodForecastAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     x = table.Column<double>(type: "float", nullable: false),
-                    y = table.Column<double>(type: "float", nullable: false)
+                    y = table.Column<double>(type: "float", nullable: false),
+                    alarm_level1 = table.Column<double>(type: "float", nullable: false),
+                    alarm_level2 = table.Column<double>(type: "float", nullable: false),
+                    alarm_level3 = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

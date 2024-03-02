@@ -4,7 +4,7 @@ import AccountCogOutline from 'mdi-material-ui/AccountCogOutline'
 
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
-import { Functions, PeopleAltOutlined, Tv } from '@mui/icons-material';
+import { PeopleAltOutlined, Tv } from '@mui/icons-material';
 
 const navigation = (): VerticalNavItemsType => {
   return [
@@ -14,28 +14,18 @@ const navigation = (): VerticalNavItemsType => {
       path: '/'
     },
     {
+      sectionTitle: 'Dữ liệu'
+    },
+    {
+      title: 'Trạm quan trắc',
+      primaryPath: 'station',
+      path: '/station'
+    },
+    {
       sectionTitle: 'Quản lý'
     },
     {
-      title: 'Dữ liệu',
-      primaryPath: 'du-lieu',
-      children: [
-        {
-          title: 'Trạm',
-          primaryPath: 'station',
-          path: '/station'
-        },
-        
-        // {
-        //   title: 'Dữ liệu mực nước',
-        //   primaryPath: 'water-level-data',
-        //   path: '/water-level-data'
-        // },
-      ]
-    },
-    {
       title: 'Hệ thống',
-      primaryPath: 'system',
       children: [
         {
           title: 'Nhóm người dùng',
@@ -54,13 +44,7 @@ const navigation = (): VerticalNavItemsType => {
           icon: Tv,
           primaryPath: 'dashboard',
           path: '/system/dashboard'
-        },
-        {
-          title: 'Các chức năng',
-          icon: Functions,
-          primaryPath: 'function',
-          path: '#'
-        },
+        }
       ]
     },
     {

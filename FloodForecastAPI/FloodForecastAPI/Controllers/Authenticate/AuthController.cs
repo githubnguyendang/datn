@@ -59,7 +59,7 @@ namespace FloodForecastAPI.Controllers
             else
             {
                 //return BadRequest(new { message = "Đổi mật khẩu thất bại", error = true });
-                return BadRequest(new { message = "Đổi mật khẩu thất bại", error = true, data = new { currentPassword, newPassword, newConfirmPassword} });
+                return BadRequest(new { message = "Đổi mật khẩu thất bại", error = true, data = new { currentPassword, newPassword, newConfirmPassword } });
             }
         }
 
@@ -109,6 +109,14 @@ namespace FloodForecastAPI.Controllers
             {
                 return Ok(new { message = "Lỗi xóa dữ liệu", error = true });
             }
+        }
+
+
+        [HttpPost]
+        [Route("check-access-permission")]
+        public async Task<bool> CheckAccessPermission([FromQuery] string userName, string linkControl, string action)
+        {
+            return await _repo.CheckAccessPermission(userName, linkControl, action);
         }
 
         [HttpPost]

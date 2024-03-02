@@ -4,9 +4,12 @@ import { Box, Grid, IconButton, Paper, Tooltip } from '@mui/material'
 import DialogsControlFullScreen from 'src/@core/components/dialog-control-full-screen'
 import TableComponent, { TableColumn } from 'src/@core/components/table'
 import { getData } from 'src/api/axios'
-import dayjs from 'dayjs'
 import DeleteData from 'src/@core/components/delete-data'
 import FormWaterLevelData from '../water-level-data/form'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { checkAccessPermission } from 'src/@core/layouts/checkAccessPermission'
 
 interface FormDataProps {
     data: any
@@ -16,6 +19,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
 
     const { data } = props;
 
+    const [paramFilter, setParamFilter] = useState({ s_d: new Date("1970-1-1"), e_d: new Date("2022-12-31") })
     const [wl_data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const isMounted = useRef(true);
@@ -24,10 +28,25 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
         setPostSuccess(prevState => !prevState);
     };
 
+    const [accessCreate, setAccessCreate] = useState(false);
+    const [accessUpdate, setAccessUpdate] = useState(false)
+    const [accessDelete, setAccessDelete] = useState(false)
+
+    async function getAccess() {
+
+        setAccessCreate(await checkAccessPermission('water-level-data', 'CREATE'));
+        setAccessUpdate(await checkAccessPermission('water-level-data', 'EDIT'));
+        setAccessDelete(await checkAccessPermission('water-level-data', 'DELETE'));
+    }
+    useEffect(() => {
+        getAccess()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     const getDataStations = async () => {
         try {
             setLoading(true);
-            const fetch_data = await getData(`WaterLevelData/${data.id}/${dayjs(new Date("1970-1-1")).format("YYYY-MM-DD")}/${dayjs(new Date()).format("YYYY-MM-DD")}`);
+            const fetch_data = await getData(`WaterLevelData/${data.id}/${dayjs(paramFilter.s_d).format("YYYY-MM-DD")}/${dayjs(paramFilter.e_d).format("YYYY-MM-DD")}`);
             if (isMounted.current) {
                 setData(fetch_data);
             }
@@ -49,7 +68,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
     useEffect(() => {
         getDataStations();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [postSuccess]);
+    }, [postSuccess, paramFilter]);
 
     const tableColumn: TableColumn[] = [
         { id: 'stt', label: "STT", align: "center" },
@@ -65,16 +84,35 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
         <Grid container spacing={4}>
             <Grid item md={12}>
                 <Paper sx={{ p: 3, display: 'flex', justifyContent: 'space-between' }}>
-                    Mực nước tại {data.name}
-                    <FormWaterLevelData setPostSuccess={handlePostSuccess} station={data} isEdit={false} />
+                    Mực nước tại {data.name} - Tỉnh Quảng Ngãi
+
+                    <Box display={'flex'}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                value={dayjs(paramFilter.s_d)}
+                                onChange={(newdate: any) => setParamFilter({ ...paramFilter, s_d: newdate })}
+                                slotProps={{ textField: { size: 'small', fullWidth: true, sx: { px: 2 } } }}
+                                label='Ngày'
+                                format="DD/MM/YYYY" />
+                        </LocalizationProvider>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                value={dayjs(paramFilter.e_d)}
+                                onChange={(newdate: any) => setParamFilter({ ...paramFilter, e_d: newdate })}
+                                slotProps={{ textField: { size: 'small', fullWidth: true, sx: { px: 2 } } }}
+                                label='Ngày'
+                                format="DD/MM/YYYY" />
+                        </LocalizationProvider>
+                        {accessCreate ? <FormWaterLevelData setPostSuccess={handlePostSuccess} station={data} isEdit={false} /> : null}
+                    </Box>
                 </Paper>
             </Grid>
             <Grid item md={12}>
                 <TableComponent columns={tableColumn} rows={wl_data} loading={loading} pagination rowperpage={25}
                     actions={(e: any) => (
                         <Box>
-                            <FormWaterLevelData isEdit={true} data={e} station={data} setPostSuccess={handlePostSuccess} />
-                            <DeleteData url={'WaterLevelData'} data={e} setPostSuccess={handlePostSuccess} />
+                            {accessUpdate ? <FormWaterLevelData isEdit={true} data={e} station={data} setPostSuccess={handlePostSuccess} /> : null}
+                            {accessDelete ? <DeleteData url={'WaterLevelData'} data={e} setPostSuccess={handlePostSuccess} /> : null}
                         </Box>
                     )} />
             </Grid>

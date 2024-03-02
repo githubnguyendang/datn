@@ -26,35 +26,31 @@ namespace FloodForecastAPI.Service
             _httpContext = httpContext;
         }
 
-        public async Task<List<UserDto>> GetAllUsersAsync()
+        public async Task<List<UserDto>> GetAllUsersAsync(FormFilterUser filter)
         {
-            var items = await _context.Users
+            var items = _context.Users
                 .Where(u => u.IsDeleted == false)
-                .ToListAsync();
+                .AsQueryable();
 
-            var users = new List<UserDto>();
+            if (!string.IsNullOrEmpty(filter.UserName))
+                items = items.Where(u => u.UserName.ToLower().Contains(filter.UserName.ToLower()));
 
-            foreach (var u in items)
+            var us = await items.ToArrayAsync();
+
+            var users = _mapper.Map<List<UserDto>>(us);
+
+            foreach (var u in users)
             {
-                var user = new UserDto
-                {
-                    Id = u.Id,
-                    UserName = u.UserName!,
-                    Email = u.Email!,
-                    PhoneNumber = u.PhoneNumber!
-                };
 
-                var roles = await _userManager.GetRolesAsync(u);
+                var roles = await _userManager.GetRolesAsync(await _userManager.FindByNameAsync(u.UserName));
                 if (roles.Count > 0)
                 {
                     var role = await _roleManager.FindByNameAsync(roles[0]);
                     if (role != null)
                     {
-                        user.Role = role.Name;
+                        u.Role = role.Name;
                     }
                 }
-
-                users.Add(user);
             }
 
             return users;
@@ -69,25 +65,34 @@ namespace FloodForecastAPI.Service
             var roleName = roles.FirstOrDefault();
             userInfo.Role = roleName;
 
-            var dashIds = _context!.UserDashboards!.Where(x => x.UserId == userInfo.Id).Select(x => x.DashboardId).ToList();
-            var dashboards = await _context!.Dashboards!.Where(x => dashIds.Contains(x.Id)).ToListAsync();
-            userInfo.Dashboards = _mapper.Map<List<DashboardDto>>(dashboards);
-            foreach (var dash in userInfo.Dashboards)
+            var dashIds = await _context.UserDashboards.Where(x => x.UserId == userInfo.Id).Select(x => x.DashboardId).ToListAsync();
+            if (dashIds.Any())
             {
-                var functions = await _context!.Functions!.Where(x => x.Id > 0).ToListAsync();
-                dash.Functions = _mapper.Map<List<FunctionDto>>(functions);
-                foreach (var function in dash.Functions)
+                var dashboards = await _context.Dashboards.Where(x => x.IsDeleted == false).ToListAsync();
+                dashboards = (List<Dashboards>)dashboards.Where(x => dashIds.Contains(x.Id)).ToList();
+                userInfo.Dashboards = _mapper.Map<List<DashboardDto>>(dashboards);
+                foreach (var dash in userInfo.Dashboards)
                 {
-                    var existingPermission = await _context!.Permissions!
-                        .FirstOrDefaultAsync(d => d.FunctionId == function.Id && d.DashboardId == dash.Id && d.UserId == userInfo.Id);
 
-                    if (existingPermission != null)
+                    var functions = await _context!.Functions!.Where(x => x.Id > 0).ToListAsync();
+
+                    if (dash.Path.ToLower() != "user")
+                        functions = functions.Where(x => x.PermitCode != "ASSIGNROLE").ToList();
+
+                    dash.Functions = _mapper.Map<List<FunctionDto>>(functions);
+                    foreach (var function in dash.Functions)
                     {
-                        function.Status = true;
-                    }
-                    else
-                    {
-                        function.Status = false;
+                        var existingPermission = await _context!.Permissions!
+                            .FirstOrDefaultAsync(d => d.FunctionId == function.Id && d.DashboardId == dash.Id && d.UserId == userInfo.Id);
+
+                        if (existingPermission != null)
+                        {
+                            function.Status = true;
+                        }
+                        else
+                        {
+                            function.Status = false;
+                        }
                     }
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FloodForecastAPI.Data
 {
@@ -17,6 +18,7 @@ namespace FloodForecastAPI.Data
                 await SeedRolesAsync(roleManager);
                 await SeedUsersAsync(userManager);
                 await SeedFunctionsAsync(context);
+                await SeedDashboardAsync(context);
             }
         }
 
@@ -37,9 +39,9 @@ namespace FloodForecastAPI.Data
                 await userManager.CreateAsync(admin, "admin");
                 await userManager.AddToRoleAsync(admin, "Administrator");
 
-                var guest = new AspNetUsers { UserName = "guest", IsDeleted = false };
-                await userManager.CreateAsync(guest, "guest");
-                await userManager.AddToRoleAsync(guest, "Default");
+                var dangnt = new AspNetUsers { UserName = "dang.nt", IsDeleted = false };
+                await userManager.CreateAsync(dangnt, "dang.nt");
+                await userManager.AddToRoleAsync(dangnt, "Default");
             }
         }
 
@@ -51,8 +53,27 @@ namespace FloodForecastAPI.Data
                     new Functions { PermitName = "View", PermitCode = "VIEW" },
                     new Functions { PermitName = "Create", PermitCode = "CREATE" },
                     new Functions { PermitName = "Edit", PermitCode = "EDIT" },
-                    new Functions { PermitName = "Delete", PermitCode = "DELETE" });
+                    new Functions { PermitName = "Delete", PermitCode = "DELETE" },
+                    new Functions { PermitName = "AssignRole", PermitCode = "ASSIGNROLE" });
 
+                await context.SaveChangesAsync();
+            }
+        }
+
+        private static async Task SeedDashboardAsync(DatabaseContext context)
+        {
+            if (!await context.Dashboards!.AnyAsync())
+            {
+                context.Dashboards!.AddRange(
+                    new Dashboards { Name = "Users", Path = "user", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "UserInfo", Path = "user-info", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "Roles", Path = "role", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "Permission", Path = "permission", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "Dashboard", Path = "dashboard", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "Stations", Path = "station", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "RealMeasurementData", Path = "water-level-data", IsDeleted = false, PermitAccess = false }
+
+                    );
                 await context.SaveChangesAsync();
             }
         }

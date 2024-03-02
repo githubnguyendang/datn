@@ -15,7 +15,8 @@ namespace FloodForecastAPI.Helpers
             CreateMap<AspNetUsers, UserDto>().ReverseMap();
 
             //Users Info
-            CreateMap<AspNetUsers, UserInfoDto>().ForMember(dest => dest.Dashboards, opt =>
+            CreateMap<AspNetUsers, UserInfoDto>()
+                .ForMember(dest => dest.Dashboards, opt =>
                 {
                     opt.MapFrom((src, dest) => dest.Dashboards);
                 }).ReverseMap();

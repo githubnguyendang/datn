@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IconButton, Box } from '@mui/material';
+import { IconButton, Box, Toolbar, TextField } from '@mui/material';
 import TableComponent from 'src/@core/components/table';
 import AssignPermit from './assign-permit';
 import AssignFunction from './assign-function';
@@ -9,12 +9,13 @@ const UserPermit = () => {
 
   const [resData, setResData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [paramFilter, setParamFilter] = useState({ UserName: '' });
 
   useEffect(() => {
     const getDataUser = async () => {
       try {
         setLoading(true)
-        const data = await getData('User/list');
+        const data = await getData('User/list', paramFilter);
         setResData(data);
       } catch (error) {
         setResData([]);
@@ -24,7 +25,7 @@ const UserPermit = () => {
     };
 
     getDataUser();
-  }, []);
+  }, [paramFilter]);
 
   const columnsTable = [
     { id: 'userName', label: 'Tên người dùng', elm: (row: any) => (<AssignFunction data={row} />) },
@@ -34,6 +35,18 @@ const UserPermit = () => {
 
   return (
     <div>
+      <Toolbar variant="dense" sx={{ display: 'flex', justifyContent: 'end' }}>
+        <Box  >
+          <TextField
+            sx={{ p: 0 }}
+            size="small"
+            fullWidth
+            variant="outlined"
+            placeholder="Tài khoản..."
+            onChange={(e: any) => setParamFilter({ ...paramFilter, UserName: e.target.value })}
+          />
+        </Box>
+      </Toolbar>
       <TableComponent
         columns={columnsTable}
         rows={resData}

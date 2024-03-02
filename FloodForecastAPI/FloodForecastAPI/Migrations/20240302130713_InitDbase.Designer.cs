@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FloodForecastAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240222091643_updateDB")]
-    partial class updateDB
+    [Migration("20240302130713_InitDbase")]
+    partial class InitDbase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -310,6 +310,15 @@ namespace FloodForecastAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<double>("alarm_level1")
+                        .HasColumnType("float");
+
+                    b.Property<double>("alarm_level2")
+                        .HasColumnType("float");
+
+                    b.Property<double>("alarm_level3")
+                        .HasColumnType("float");
 
                     b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");

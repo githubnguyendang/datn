@@ -12,4 +12,9 @@
         public string Role { get; set; } = string.Empty;
         public List<PermissionDto> Permission { get; set; } = null;
     }
+
+    public class FormFilterUser
+    {
+        public string UserName { get; set; }
+    }
 }

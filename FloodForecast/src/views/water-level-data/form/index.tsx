@@ -90,6 +90,7 @@ const FormWaterLevelData: React.FC<FormWaterLevelDataProps> = ({ isEdit, data, s
                         </IconButton>
                     ) : (
                         <Button
+                            sx={{ width: '-webkit-fill-available' }}
                             size="small"
                             startIcon={<Add />}
                             onClick={() =>

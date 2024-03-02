@@ -6,6 +6,8 @@ import MuiListSubheader, { ListSubheaderProps } from '@mui/material/ListSubheade
 
 // ** Types
 import { NavSectionTitle } from 'src/@core/layouts/types'
+import { useState } from 'react'
+import { checkAccessPermission } from 'src/@core/layouts/checkAccessPermission'
 
 interface Props {
   item: NavSectionTitle
@@ -40,10 +42,18 @@ const VerticalNavSectionTitle = (props: Props) => {
   // ** Hook
   const theme = useTheme()
 
+  const [havePermit, setHavePermit] = useState<boolean | undefined>(false)
+  async function getPermit() {
+    setHavePermit(await checkAccessPermission(item.primaryPath, 'view'));
+  }
+
+  getPermit();
+
   return (
     <ListSubheader
       className='nav-section-title'
       sx={{
+        display: havePermit ? 'block' : 'none',
         px: 0,
         py: 1.75,
         mb: '10px',

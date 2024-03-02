@@ -90,6 +90,7 @@ namespace FloodForecastAPI.Service
                     DashboardId = dashboard.Id,
                     DashboardName = dashboard.Name,
                     FileControl = dashboard.Path,
+                    Description = dashboard.Description,
                     UserId = user?.Id
                 };
 

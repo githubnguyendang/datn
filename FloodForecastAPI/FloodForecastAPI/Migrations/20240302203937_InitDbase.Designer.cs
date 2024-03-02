@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FloodForecastAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240302133120_SeedData")]
-    partial class SeedData
+    [Migration("20240302203937_InitDbase")]
+    partial class InitDbase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -26,7 +26,9 @@ namespace FloodForecastAPI.Data
         {
             if (!await roleManager.Roles.AnyAsync())
             {
-                await roleManager.CreateAsync(new AspNetRoles { Name = "Administrator", IsDeleted = false });
+                await roleManager.CreateAsync(new AspNetRoles { Name = "Administrator", Description = "Quản trị hệ thống", IsDeleted = false });
+                await roleManager.CreateAsync(new AspNetRoles { Name = "Professional", Description = "Chuyên viên", IsDeleted = false });
+                await roleManager.CreateAsync(new AspNetRoles { Name = "Leader", Description = "Lãnh đạo", IsDeleted = false });
                 await roleManager.CreateAsync(new AspNetRoles { Name = "Default", IsDefault = true, IsDeleted = false });
             }
         }
@@ -39,9 +41,17 @@ namespace FloodForecastAPI.Data
                 await userManager.CreateAsync(admin, "admin");
                 await userManager.AddToRoleAsync(admin, "Administrator");
 
+                var lanpth = new AspNetUsers { UserName = "lan.pth", IsDeleted = false };
+                await userManager.CreateAsync(lanpth, "lan.pth");
+                await userManager.AddToRoleAsync(lanpth, "Leader");
+
                 var dangnt = new AspNetUsers { UserName = "dang.nt", IsDeleted = false };
                 await userManager.CreateAsync(dangnt, "dang.nt");
-                await userManager.AddToRoleAsync(dangnt, "Default");
+                await userManager.AddToRoleAsync(dangnt, "Professional");
+
+                var anhnt = new AspNetUsers { UserName = "anh.nt", IsDeleted = false };
+                await userManager.CreateAsync(anhnt, "anh.nt");
+                await userManager.AddToRoleAsync(anhnt, "Default");
             }
         }
 
@@ -50,11 +60,16 @@ namespace FloodForecastAPI.Data
             if (!await context.Functions!.AnyAsync())
             {
                 context.Functions!.AddRange(
-                    new Functions { PermitName = "View", PermitCode = "VIEW" },
-                    new Functions { PermitName = "Create", PermitCode = "CREATE" },
-                    new Functions { PermitName = "Edit", PermitCode = "EDIT" },
-                    new Functions { PermitName = "Delete", PermitCode = "DELETE" },
-                    new Functions { PermitName = "AssignRole", PermitCode = "ASSIGNROLE" });
+                    //Base function
+                    new Functions { PermitName = "Xem", PermitCode = "VIEW" },
+                    new Functions { PermitName = "Thêm mới", PermitCode = "CREATE" },
+                    new Functions { PermitName = "Cập nhật", PermitCode = "EDIT" },
+                    new Functions { PermitName = "Xóa", PermitCode = "DELETE" },
+                    //Function in user
+                    new Functions { PermitName = "Đặt lại mật khẩu", PermitCode = "RESETPASSWORD" },
+                    new Functions { PermitName = "Cấp quyền", PermitCode = "SETROLE" },
+                    new Functions { PermitName = "Chit định quyền", PermitCode = "ASSIGNROLE" },
+                    new Functions { PermitName = "Chỉ định Chức nằng", PermitCode = "ASSIGNFUNCTION" });
 
                 await context.SaveChangesAsync();
             }
@@ -65,13 +80,17 @@ namespace FloodForecastAPI.Data
             if (!await context.Dashboards!.AnyAsync())
             {
                 context.Dashboards!.AddRange(
-                    new Dashboards { Name = "Users", Path = "user", IsDeleted = false, PermitAccess = false },
-                    new Dashboards { Name = "UserInfo", Path = "user-info", IsDeleted = false, PermitAccess = false },
-                    new Dashboards { Name = "Roles", Path = "role", IsDeleted = false, PermitAccess = false },
-                    new Dashboards { Name = "Permission", Path = "permission", IsDeleted = false, PermitAccess = false },
-                    new Dashboards { Name = "Dashboard", Path = "dashboard", IsDeleted = false, PermitAccess = false },
-                    new Dashboards { Name = "Stations", Path = "station", IsDeleted = false, PermitAccess = false },
-                    new Dashboards { Name = "RealMeasurementData", Path = "water-level-data", IsDeleted = false, PermitAccess = false }
+                    new Dashboards { Name = "Users", Path = "user", Description = "Quản lý tài khoản", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "UserInfo", Path = "user-info", Description = "Thông tin tài khoản", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "Roles", Path = "role", Description = "Quản lý role", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "Dashboard", Path = "dashboard", Description = "Quản lý đường dẫ truy cập", IsDeleted = false, PermitAccess = false },
+
+                    new Dashboards { Name = "Manage", Path = "manage", Description = "Quản lý", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "System", Path = "system", Description = "Quản lý hệ thống", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "Permission", Path = "permission", Description = "Quản lý phân quyền truy cập", IsDeleted = false, PermitAccess = false },
+
+                    new Dashboards { Name = "Stations", Path = "station", Description = "Quản lý thông tin trạm", IsDeleted = false, PermitAccess = false },
+                    new Dashboards { Name = "RealMeasurementData", Description = "Quản lý dữ liệu thực đo", Path = "water-level-data", IsDeleted = false, PermitAccess = false }
 
                     );
                 await context.SaveChangesAsync();

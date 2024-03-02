@@ -14,18 +14,17 @@ const navigation = (): VerticalNavItemsType => {
       path: '/'
     },
     {
-      sectionTitle: 'Dữ liệu'
-    },
-    {
-      title: 'Trạm quan trắc',
+      title: 'Quản lý trạm quan trắc',
       primaryPath: 'station',
       path: '/station'
     },
     {
-      sectionTitle: 'Quản lý'
+      sectionTitle: 'Quản lý',
+      primaryPath: 'manage'
     },
     {
       title: 'Hệ thống',
+      primaryPath: 'system',
       children: [
         {
           title: 'Nhóm người dùng',

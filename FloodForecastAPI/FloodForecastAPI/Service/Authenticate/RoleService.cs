@@ -49,11 +49,18 @@ namespace FloodForecastAPI.Service
             var dashIds = _context!.RoleDashboards!.Where(x => x.RoleId == roleDto.Id).Select(x => x.DashboardId).ToList();
             if (dashIds.Any())
             {
-                var dashboards = await _context!.Dashboards!.Where(x => dashIds.Contains(x.Id)).ToListAsync();
+                var dashboards = await _context.Dashboards.Where(x => x.IsDeleted == false).ToListAsync();
+                dashboards = (List<Dashboards>)dashboards.Where(x => dashIds.Contains(x.Id)).ToList();
                 roleDto.Dashboards = _mapper.Map<List<DashboardDto>>(dashboards);
                 foreach (var dash in roleDto.Dashboards)
                 {
                     var functions = await _context!.Functions!.Where(x => x.Id > 0).ToListAsync();
+                    if (dash.Path.ToLower() != "user")
+                        functions = functions.Where(x => x.PermitCode != "ASSIGNROLE"
+                                                    || x.PermitCode != "RESETPASSWORD"
+                                                    || x.PermitCode != "SETROLE"
+                                                    || x.PermitCode != "ASSIGNFUNCTION"
+                                                    ).ToList();
                     dash.Functions = _mapper.Map<List<FunctionDto>>(functions);
                     foreach (var function in dash.Functions)
                     {

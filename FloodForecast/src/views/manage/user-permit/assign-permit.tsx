@@ -69,6 +69,7 @@ const Form = ({ data }: any) => {
   const permitColumn = [
     { id: 'dashboardName', label: 'Màn hình chức năng', },
     { id: 'fileControl', label: 'URL' },
+    { id: 'description', label: 'Chú thích' },
     {
       id: 'permitAccess',
       label: 'Được phép truy cập',

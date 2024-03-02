@@ -8,6 +8,7 @@
         public int DashboardId { get; set; }
         public string DashboardName { get; set; }
         public string FileControl { get; set; }
+        public string Description { get; set; }
         public bool PermitAccess { get; set; }
     }
 }

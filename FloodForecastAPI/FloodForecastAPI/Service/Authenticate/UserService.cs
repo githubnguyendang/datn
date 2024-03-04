@@ -78,9 +78,9 @@ namespace FloodForecastAPI.Service
 
                     if (dash.Path.ToLower() != "user")
                         functions = functions.Where(x => x.PermitCode != "ASSIGNROLE"
-                                                    || x.PermitCode != "RESETPASSWORD"
-                                                    || x.PermitCode != "SETROLE"
-                                                    || x.PermitCode != "ASSIGNFUNCTION"
+                                                    && x.PermitCode != "RESETPASSWORD"
+                                                    && x.PermitCode != "SETROLE"
+                                                    && x.PermitCode != "ASSIGNFUNCTION"
                                                     ).ToList();
 
                     dash.Functions = _mapper.Map<List<FunctionDto>>(functions);

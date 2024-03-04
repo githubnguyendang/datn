@@ -26,10 +26,10 @@ const ListData = (props: PropsState) => {
   return (
     <Paper elevation={3}>
       <Paper elevation={3} sx={{ py: 0.5, mb: 2, BorderRadius: 0, textAlign: 'center' }}>
-        <Typography variant='overline' sx={{ fontWeight: 'bold' }}>Danh sách trạm</Typography>
+        <Typography variant='overline' sx={{ fontWeight: 'bold' }}>Danh sách trạm đo dữ liệu</Typography>
       </Paper>
       <Box px={5} pb={5}>
-        <TableComponent columns={tableColumns} loading={loading} rows={data} pagination actions={(e: any) => (
+        <TableComponent columns={tableColumns} loading={loading} rows={data} pagination rowperpage={5} actions={(e: any) => (
           <Box>
             <ViewData data={e} />
           </Box>

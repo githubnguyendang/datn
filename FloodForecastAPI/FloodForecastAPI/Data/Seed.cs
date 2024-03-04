@@ -68,7 +68,7 @@ namespace FloodForecastAPI.Data
                     //Function in user
                     new Functions { PermitName = "Đặt lại mật khẩu", PermitCode = "RESETPASSWORD" },
                     new Functions { PermitName = "Cấp quyền", PermitCode = "SETROLE" },
-                    new Functions { PermitName = "Chit định quyền", PermitCode = "ASSIGNROLE" },
+                    new Functions { PermitName = "Chỉ định quyền", PermitCode = "ASSIGNROLE" },
                     new Functions { PermitName = "Chỉ định Chức nằng", PermitCode = "ASSIGNFUNCTION" });
 
                 await context.SaveChangesAsync();

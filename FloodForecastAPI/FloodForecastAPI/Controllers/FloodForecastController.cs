@@ -13,12 +13,12 @@ public class FloodForecastController : ControllerBase
         _forecastService = forecastService;
     }
 
-    [HttpPost("predict/{station_id}")]
-    public async Task<IActionResult> Predict(int station_id)
+    [HttpPost("predict/{station_id}/{amount_rain}")]
+    public async Task<IActionResult> Predict(int station_id, float amount_rain)
     {
         try
         {
-            WaterLevelPredictionOut predictionOut = await _forecastService.PredictAsync(station_id);
+            WaterLevelPredictionOut predictionOut = await _forecastService.PredictAsync(station_id, amount_rain);
             return Ok(predictionOut);
         }
         catch (Exception ex)

@@ -4,7 +4,6 @@ import RealTime from './real-time';
 import HomeMap from './map';
 import ListData from './list-data';
 import { getData } from 'src/api/axios';
-import ForecastNewsletter from './forecast-newsletter';
 
 const Home = () => {
 
@@ -48,9 +47,6 @@ const Home = () => {
             <Grid item xs={12} md={4}>
                 <Grid item xs={12} md={12} marginBottom={2}>
                     <ListData data={data} loading={loading} />
-                </Grid>
-                <Grid item xs={12} md={12}>
-                    <ForecastNewsletter />
                 </Grid>
             </Grid>
             <Grid item xs={12} md={8}>

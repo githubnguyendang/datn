@@ -11,15 +11,18 @@ namespace FloodForecasting
     public class FloodData
     {
         [LoadColumn(0)]
+        public float station_id { get; set; }
+
+        [LoadColumn(1)]
         public DateTime date { get; set; }
         public float DayOfYear => date.DayOfYear;
         public float Month => date.Month;
         public float Year => date.Year;
 
-        [LoadColumn(1)]
+        [LoadColumn(2)]
         public float water_level { get; set; }
 
-        [LoadColumn(2)]
+        [LoadColumn(3)]
         public float amount_rain { get; set; }
 
         [ColumnName("Label")]
@@ -49,10 +52,11 @@ namespace FloodForecasting
 
                 var floodData = new FloodData
                 {
-                    date = DateTime.Parse(columns[0]),
-                    water_level = float.Parse(columns[1]),
-                    amount_rain = float.Parse(columns[2]),
-                    NextDayWaterLevel = float.Parse(nextDayColumns[1]) // Next day's water level
+                    station_id = float.Parse(columns[0]),
+                    date = DateTime.Parse(columns[1]),
+                    water_level = float.Parse(columns[2]),
+                    amount_rain = float.Parse(columns[3]),
+                    NextDayWaterLevel = float.Parse(nextDayColumns[2]) // Next day's water level
                 };
 
                 floodDataList.Add(floodData);
@@ -64,7 +68,8 @@ namespace FloodForecasting
             TrainTestData splitDataView = mlContext.Data.TrainTestSplit(dataView, testFraction: 0.2);
 
             // Data processing and model training
-            var pipeline = mlContext.Transforms.Concatenate("Features", nameof(FloodData.DayOfYear),
+            var pipeline = mlContext.Transforms.Concatenate("Features", nameof(FloodData.station_id),
+                                                                        nameof(FloodData.DayOfYear),
                                                                         nameof(FloodData.Month),
                                                                         nameof(FloodData.Year),
                                                                         nameof(FloodData.water_level),
@@ -95,9 +100,10 @@ namespace FloodForecasting
             var predictionFunction = mlContext.Model.CreatePredictionEngine<FloodData, WaterLevelPrediction>(modelsaved);
             var floodPrediction = predictionFunction.Predict(new FloodData()
             {
+                station_id = 2,
                 date = new DateTime(2024, 02, 27), // ví dụ ngày cụ thể
-                water_level = 600.0f, // giá trị mẫu
-                amount_rain = 306.3f  // giá trị mẫu
+                water_level = 3016.2f, // giá trị mẫu
+                amount_rain = 36.3f  // giá trị mẫu
             });
 
             // Output the flood prediction

@@ -28,7 +28,7 @@ export async function saveData(url: string, data: any) {
     const filteredData = Object.fromEntries(
         Object.entries(data).map(([key, value]) => [key, value === "" ? null : value])
     );
-    
+
     try {
         const response = await axios.post(`${apiUrl}/${url}`, filteredData, {
             headers: {
@@ -103,4 +103,22 @@ export async function uploadFile(postData: any) {
 
         return false;
     }
+}
+
+export async function getWaterLevelPrediction(station_id: number, amount_rain: number) {
+    const response = await fetch(`${apiUrl}/FloodForecast/predict/${station_id}/${amount_rain}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            // Dữ liệu bạn muốn gửi, nếu có
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+    }
+
+    return response.json(); // or await response.json() if you want to wait for the data
 }

@@ -27,7 +27,7 @@ namespace FloodForecastAPI.Service
         {
             var query = _context.WaterLevelData!
                 .Include(x => x.station)
-                .Where(x => x.station_id == station_id && x.date >= s_date && x.date <= e_date.AddHours(59).AddMinutes(59).AddSeconds(59))
+                .Where(x => x.station_id == station_id && x.date >= s_date && x.date <= e_date.AddDays(1))
                 .OrderByDescending(x => x.date)
                 .AsQueryable();
 

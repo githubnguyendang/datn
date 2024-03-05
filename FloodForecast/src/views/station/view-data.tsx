@@ -19,7 +19,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
 
     const { data } = props;
 
-    const [paramFilter, setParamFilter] = useState({ s_d: new Date("1970-1-1"), e_d: new Date("2022-12-31") })
+    const [paramFilter, setParamFilter] = useState({ s_d: new Date("1970-1-1"), e_d: new Date() })
     const [wl_data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const isMounted = useRef(true);
@@ -90,7 +90,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 value={dayjs(paramFilter.s_d)}
-                                onChange={(newdate: any) => setParamFilter({ ...paramFilter, s_d: newdate })}
+                                onChange={(s_d: any) => setParamFilter({ ...paramFilter, s_d: s_d })}
                                 slotProps={{ textField: { size: 'small', fullWidth: true, sx: { px: 2 } } }}
                                 label='Ngày'
                                 format="DD/MM/YYYY" />
@@ -98,7 +98,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 value={dayjs(paramFilter.e_d)}
-                                onChange={(newdate: any) => setParamFilter({ ...paramFilter, e_d: newdate })}
+                                onChange={(e_d: any) => setParamFilter({ ...paramFilter, e_d: e_d })}
                                 slotProps={{ textField: { size: 'small', fullWidth: true, sx: { px: 2 } } }}
                                 label='Ngày'
                                 format="DD/MM/YYYY" />

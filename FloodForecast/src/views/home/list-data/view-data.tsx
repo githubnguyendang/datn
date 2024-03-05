@@ -1,54 +1,36 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Assessment } from '@mui/icons-material'
-import { Grid, IconButton, Paper, Tooltip } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Assessment, BatchPrediction } from '@mui/icons-material'
+import { Button, Grid, IconButton, Paper, TextField, Tooltip } from '@mui/material'
 import DialogsControlFullScreen from 'src/@core/components/dialog-control-full-screen'
 import TableComponent, { TableColumn } from 'src/@core/components/table'
 import ReactApexcharts from 'src/@core/components/react-apexcharts';
 import { ApexOptions } from "apexcharts";
-import { getData } from 'src/api/axios'
+import { getWaterLevelPrediction } from 'src/api/axios'
 import dayjs from 'dayjs'
-import apiUrl from 'src/api/config'
+import ForecastNewsletter from '../forecast-newsletter'
 
-interface FormDataProps {
+interface ForceastAndReportProps {
     data: any
 }
 
-const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
+const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndReportProps) => {
 
     const { data } = props;
 
-    const [wl_data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [predictData, setPredictData] = useState<any>({ water_level: [], water_level_predict: [], date: [] });
-    const [paramFilter] = useState<any>({ s_d: new Date("2020-1-1"), e_d: new Date("2022-12-31") })
+    const [predictData, setPredictData] = useState<any>({ water_level: [], water_level_predict: [], date: [], data: [] });
+    const [amount_rain, setAmountRain] = useState<any>(0);
+    const [resetData, setResetData] = useState(false);
+    const [dataUri, setDataUri] = useState('');
 
-    const isMounted = useRef(true);
-
-    const getDataStations = async () => {
+    const getDataAndPredict = async () => {
         try {
-            setLoading(true);
-            const fetch_data = await getData(`WaterLevelData/${data.id}/${dayjs(paramFilter.s_d).format("YYYY-MM-DD")}/${dayjs(paramFilter.e_d).format("YYYY-MM-DD")}`);
-            if (isMounted.current) {
-                setData(fetch_data);
-            }
-
-            getWaterLevelPrediction()
+            getWaterLevelPrediction(data.id, amount_rain)
                 .then(data => {
-
-                    // Make a copy of the water_level array
-                    const modifiedWaterLevel = [...data.water_level];
-
-                    // Check if the array has at least two elements
-                    if (modifiedWaterLevel.length >= 3) {
-                        // Set the last two elements to null
-                        modifiedWaterLevel[modifiedWaterLevel.length - 1] = null;
-                        modifiedWaterLevel[modifiedWaterLevel.length - 2] = null;
-                        modifiedWaterLevel[modifiedWaterLevel.length - 3] = null;
-                    }
                     setPredictData({
-                        water_level: modifiedWaterLevel.slice(-180),
-                        water_level_predict: data.water_level_predict.slice(-180),
-                        date: data.dates.slice(-180).map((entry: { date: any }) => dayjs(entry.date).format('DD-MM-YYYY'))
+                        water_level: data.water_level,
+                        water_level_predict: data.water_level_predict,
+                        date: data.dates.map((date: any) => dayjs(date).format("DD/MM/YYYY")),
+                        data: data.data
                     })
                 })
                 .catch(error => {
@@ -57,40 +39,13 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
         } catch (error) {
             console.error(error);
         } finally {
-            setLoading(false);
         }
     };
 
-    async function getWaterLevelPrediction() {
-        const response = await fetch(`${apiUrl}/FloodForecast/predict/${data.id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                // Dữ liệu bạn muốn gửi, nếu có
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-
-        return response.json(); // or await response.json() if you want to wait for the data
-    }
-
     useEffect(() => {
-        isMounted.current = true;
-
-        return () => {
-            isMounted.current = false;
-        };
-    }, []);
-
-    useEffect(() => {
-        getDataStations();
+        getDataAndPredict();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [resetData]);
 
     const tableColumn: TableColumn[] = [
         { id: 'stt', label: "STT", align: "center" },
@@ -99,18 +54,51 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
         { id: 'amount_rain', label: "Lượng mưa(mm)", align: "center" },
     ]
 
+    const GetChartURI = () => {
+        setTimeout(() => {
+            // Dynamically import ApexCharts
+            import("apexcharts").then(({ default: ApexCharts }) => {
+                if (ApexCharts && typeof ApexCharts.exec === 'function') {
+                    ApexCharts.exec("#water_level_chart", "dataURI")?.then(({ imgURI }: any) => {
+                        setDataUri(imgURI);
+                    }).catch((error: any) => {
+                        console.error("Error generating chart image:", error);
+                    });
+                }
+            });
+        }, 2000);
+    }
+
     //For chart
 
     const options: ApexOptions = {
         chart: {
             height: 450,
+            id: "#water_level_chart",
             type: 'line',
+            dropShadow: {
+                enabled: true,
+                color: '#000',
+                top: 18,
+                left: 7,
+                blur: 10,
+                opacity: 0.2
+            },
             zoom: {
                 enabled: false
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            offsetX: -15,
+            formatter: function (val: any, opt: any) {
+                const data = opt.w.config.series[0].data
+                if (opt.dataPointIndex === data.length - 1 && val !== null) {
+                    return val;
+                }
+
+                return ''
+            }
         },
         stroke: {
             curve: 'smooth',
@@ -118,7 +106,8 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
         },
         legend: {
             show: true,
-            position: "right",
+            position: 'top',
+            horizontalAlign: 'right',
             tooltipHoverFormatter: function (val: any, opts: any) {
                 return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
             },
@@ -189,7 +178,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
             }
         },
         forecastDataPoints: {
-            count: 3,
+            count: 1,
             strokeWidth: 5
         },
         tooltip: {
@@ -220,6 +209,7 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
         },
     ];
 
+    console.log(resetData)
 
     return (
         <Grid container spacing={4}>
@@ -229,11 +219,38 @@ const FormData: React.FC<FormDataProps> = (props: FormDataProps) => {
                 </Paper>
             </Grid>
             <Grid item md={4}>
-                <TableComponent columns={tableColumn} rows={wl_data} loading={loading} pagination rowperpage={25} />
+                <Grid container spacing={2}>
+                    <Grid item>
+                        <TextField size='small' label='Lượng mưa' type='number' value={amount_rain} onChange={(e) => {
+                            const regex = /[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/;
+                            if (e.target.value === "" || regex.test(e.target.value)) {
+                                setAmountRain(e.target.value);
+                            }
+                        }} />
+                    </Grid>
+                    <Grid item>
+                        <Button variant='outlined' sx={{ mx: 2 }} startIcon={<BatchPrediction />} onClick={() => {
+                            GetChartURI();
+                            setResetData(!resetData);
+                        }}>Dự báo</Button>
+                    </Grid>
+                    <Grid item>
+                        <ForecastNewsletter data={{
+                            station: data,
+                            date: predictData?.date.slice(-1)[0],
+                            water_level_prediction: predictData?.water_level_predict.slice(-1)[0],
+                            amount_rain: amount_rain,
+                            chartURL: dataUri,
+                        }} />
+                    </Grid>
+                    <Grid item md={12}>
+                        <TableComponent columns={tableColumn} rows={predictData.data} loading={false} pagination rowperpage={25} />
+                    </Grid>
+                </Grid>
             </Grid>
             <Grid item md={8}>
                 <Paper>
-                    <ReactApexcharts options={options} series={series} type="line" />
+                    <ReactApexcharts options={options} series={series} type="line" id="#water_level_chart" />
                 </Paper>
             </Grid>
         </Grid>
@@ -255,7 +272,7 @@ const ViewData: React.FC<MonitoringSystemProps> = ({ data }) => {
                         <IconButton
                             onClick={() =>
                                 openDialogs(
-                                    <FormData data={data} />,
+                                    <ForceastAndReport data={data} />,
                                     formTitle
                                 )
                             }

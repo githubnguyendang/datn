@@ -54,6 +54,7 @@
     "@mui/x-data-grid": "^6.10.2",
     "@mui/x-date-pickers": "^6.8.0",
     "@popperjs/core": "^2.11.2",
+    "@react-pdf/renderer": "^3.3.8",
     "apexcharts": "^3.41.0",
     "axios": "^1.4.0",
     "clsx": "^1.1.1",

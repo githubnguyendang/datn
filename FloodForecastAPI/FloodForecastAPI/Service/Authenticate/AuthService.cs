@@ -75,23 +75,16 @@ namespace FloodForecastAPI.Service
                 new Claim(ClaimTypes.Name, user.UserName ?? "")
             };
 
-            var addedPermissions = new HashSet<string>(); // Sử dụng HashSet để lưu trữ các quyền đã thêm vào danh sách
+            var addedPermissions = new HashSet<string>();
 
             foreach (var role in roles)
             {
 
                 claims.Add(new Claim(ClaimTypes.Role, role));
-
-                // Lấy danh sách quyền thuộc vai trò
                 var rolePermissions = await _context.Permissions!.Where(p => p.RoleName == role).ToListAsync();
-
-                // Thêm quyền vào danh sách claims
                 foreach (var permission in rolePermissions)
                 {
-                    // Lấy thông tin dashSrc từ SQL
                     var dashSrc = await _context.Dashboards!.Where(d => d.Id == permission.DashboardId).Select(d => d.Path).FirstOrDefaultAsync();
-
-                    // Tạo một quyền dưới dạng đối tượng JSON
                     var permissionObject = new
                     {
                         funcCode = permission.FunctionCode,
@@ -99,30 +92,21 @@ namespace FloodForecastAPI.Service
                     };
 
                     var permissionJson = JsonConvert.SerializeObject(permissionObject);
-
-                    // Kiểm tra xem quyền đã được thêm vào danh sách chưa
                     if (!addedPermissions.Contains(permissionJson))
                     {
-                        // Thêm quyền vào danh sách claims
                         var permissionClaim = new Claim("Permission", permissionJson);
                         claims.Add(permissionClaim);
 
-                        // Đánh dấu quyền đã được thêm vào danh sách
                         addedPermissions.Add(permissionJson);
                     }
                 }
             }
 
-            // Lấy danh sách quyền theo tên người dùng
             var userPermissions = await _context.Permissions!.Where(p => p.UserName == user.UserName).ToListAsync();
 
-            // Thêm quyền vào danh sách claims
             foreach (var permission in userPermissions)
             {
-                // Lấy thông tin dashSrc từ SQL
                 var dashSrc = await _context.Dashboards!.Where(d => d.Id == permission.DashboardId).Select(d => d.Path).FirstOrDefaultAsync();
-
-                // Tạo một quyền dưới dạng đối tượng JSON
                 var permissionObject = new
                 {
                     funcCode = permission.FunctionCode,
@@ -131,14 +115,10 @@ namespace FloodForecastAPI.Service
 
                 var permissionJson = JsonConvert.SerializeObject(permissionObject);
 
-                // Kiểm tra xem quyền đã được thêm vào danh sách chưa
                 if (!addedPermissions.Contains(permissionJson))
                 {
-                    // Thêm quyền vào danh sách claims
                     var permissionClaim = new Claim("Permission", permissionJson);
                     claims.Add(permissionClaim);
-
-                    // Đánh dấu quyền đã được thêm vào danh sách
                     addedPermissions.Add(permissionJson);
                 }
             }
@@ -161,14 +141,38 @@ namespace FloodForecastAPI.Service
         }
 
 
-        public async Task<bool> UpdatePasswordAsync(string currentPassword, string newPassword, string newConfirmPassword)
+        public async Task<PasswordChangeResult> UpdatePasswordAsync(PasswordChange password)
         {
-            if (newPassword != newConfirmPassword) return false;
+            if (password.newPassword != password.newConfirmPassword)
+            {
+                return new PasswordChangeResult(false, "New password and confirmation password do not match.");
+            }
+
             var user = await _userManager.GetUserAsync(_httpContext.HttpContext!.User);
-            if (user == null) return false;
-            var res = await _userManager.ChangePasswordAsync(user!, currentPassword, newPassword);
-            return res.Succeeded;
+            if (user == null)
+            {
+                return new PasswordChangeResult(false, "User not found.");
+            }
+
+            var lastPasswordChangedDate = user.LastPasswordChangedDate ?? DateTime.MinValue;
+            var timeSinceLastChange = DateTime.Now - lastPasswordChangedDate;
+            if (timeSinceLastChange.TotalDays < 30)
+            {
+                var remainingTime = TimeSpan.FromDays(30) - timeSinceLastChange;
+                return new PasswordChangeResult(false, $"You can change your password in {remainingTime.Days} day(s), {remainingTime.Hours} hour(s), {remainingTime.Minutes} minute(s), and {remainingTime.Seconds} second(s).");
+            }
+
+            var res = await _userManager.ChangePasswordAsync(user, password.currentPassword, password.newPassword);
+            if (res.Succeeded)
+            {
+                user.LastPasswordChangedDate = DateTime.Now;
+                await _userManager.UpdateAsync(user);
+                return new PasswordChangeResult(true, "Password changed successfully.");
+            }
+
+            return new PasswordChangeResult(false, null);
         }
+
 
         public async Task<bool> SetPasswordAsync(UserDto dto, string newPassword)
         {

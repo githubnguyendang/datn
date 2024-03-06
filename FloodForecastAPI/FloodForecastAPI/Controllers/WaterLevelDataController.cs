@@ -33,11 +33,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.SaveAsync(dto);
             if (res)
             {
-                return Ok(new { message = "WaterLevelData: Saved successfully", id = res });
+                return Ok(new { message = "Saved water-level-data successfully", id = res });
             }
             else
             {
-                return BadRequest(new { message = "WaterLevelData: Error saving data", error = true });
+                return BadRequest(new { message = "Saving water-level-data failed", error = true });
             }
         }
 
@@ -48,11 +48,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.DeleteAsync(Id);
             if (res == true)
             {
-                return Ok(new { message = "WaterLevelData: Deleted successfully" });
+                return Ok(new { message = "Water-level-data successfully deleted" });
             }
             else
             {
-                return BadRequest(new { message = "WaterLevelData: Error deleting data", error = true });
+                return BadRequest(new { message = "Removing water-level-data failed", error = true });
             }
         }
     }

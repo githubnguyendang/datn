@@ -35,12 +35,20 @@ export async function saveData(url: string, data: any) {
                 Authorization: `Bearer ${token}`,
             },
         });
-        enqueueSnackbar(`${response.data.message}`, { variant: 'success' });
+        if (url !== 'Auth/change-password') {
+            enqueueSnackbar(`${response.data.message}`, { variant: 'success' });
+        } else {
+            if (response.data.succeeded == true) {
+                enqueueSnackbar(`${response.data.message}`, { variant: 'success' });
+            } else {
+                enqueueSnackbar(`${response.data.message}`, { variant: 'error' });
+            }
+        }
 
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
+        console.error(error)
         enqueueSnackbar('Lỗi lưu dữ liệu', { variant: 'error' });
-        console.error('Error posting data:', error);
         throw error;
     }
 }
@@ -111,14 +119,12 @@ export async function getWaterLevelPrediction(station_id: number, amount_rain: n
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-            // Dữ liệu bạn muốn gửi, nếu có
-        })
+        body: JSON.stringify({})
     });
 
     if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
     }
 
-    return response.json(); // or await response.json() if you want to wait for the data
+    return response.json();
 }

@@ -39,11 +39,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.SaveRoleDashboardAsync(moddel);
             if (res == true)
             {
-                return Ok(new { message = "RoleDashboard: Dữ liệu đã được lưu" });
+                return Ok(new { message = "Saved role-dashboard successfully" });
             }
             else
             {
-                return BadRequest(new { message = "RoleDashboard: Lỗi lưu dữ liệu",  });
+                return BadRequest(new { message = "Save role-dashboard failed", });
             }
         }
 
@@ -54,11 +54,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.DeleteRoleDashboardAsync(moddel);
             if (res == true)
             {
-                return Ok(new { message = "RoleDashboard: Dữ liệu đã được xóa" });
+                return Ok(new { message = "Role-dashboard successfully deleted" });
             }
             else
             {
-                return BadRequest(new { message = "RoleDashboard: Lỗi xóa dữ liệu",  });
+                return BadRequest(new { message = "Removing role-dashboards failed", error = true });
             }
         }
     }

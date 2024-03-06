@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Assessment, BatchPrediction } from '@mui/icons-material'
-import { Button, Grid, IconButton, Paper, TextField, Tooltip } from '@mui/material'
+import { Button, Grid, IconButton, InputAdornment, Paper, TextField, Tooltip } from '@mui/material'
 import DialogsControlFullScreen from 'src/@core/components/dialog-control-full-screen'
 import TableComponent, { TableColumn } from 'src/@core/components/table'
 import ReactApexcharts from 'src/@core/components/react-apexcharts';
@@ -21,6 +21,8 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
     const [amount_rain, setAmountRain] = useState<any>(0);
     const [resetData, setResetData] = useState(false);
     const [dataUri, setDataUri] = useState('');
+    const [createReport, setCreateReport] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const getDataAndPredict = async () => {
         try {
@@ -55,6 +57,8 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
     ]
 
     const GetChartURI = () => {
+        setCreateReport(true);
+        setLoading(true)
         setTimeout(() => {
             // Dynamically import ApexCharts
             import("apexcharts").then(({ default: ApexCharts }) => {
@@ -66,6 +70,10 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
                     });
                 }
             });
+        }, 1500);
+        setTimeout(() => {
+            setCreateReport(false)
+            setLoading(false)
         }, 2000);
     }
 
@@ -221,12 +229,17 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
             <Grid item md={4}>
                 <Grid container spacing={2}>
                     <Grid item>
-                        <TextField size='small' label='Lượng mưa' type='number' value={amount_rain} onChange={(e) => {
-                            const regex = /[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/;
-                            if (e.target.value === "" || regex.test(e.target.value)) {
-                                setAmountRain(e.target.value);
-                            }
-                        }} />
+                        <TextField size='small' label='Lượng mưa' type='number'
+                            value={amount_rain}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">(mm)</InputAdornment>
+                            }}
+                            onChange={(e) => {
+                                const regex = /[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?/;
+                                if (e.target.value === "" || regex.test(e.target.value)) {
+                                    setAmountRain(e.target.value);
+                                }
+                            }} />
                     </Grid>
                     <Grid item>
                         <Button variant='outlined' sx={{ mx: 2 }} startIcon={<BatchPrediction />} onClick={() => {
@@ -235,7 +248,7 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
                         }}>Dự báo</Button>
                     </Grid>
                     <Grid item>
-                        <ForecastNewsletter data={{
+                        <ForecastNewsletter disabled={createReport} loading={loading} data={{
                             station: data,
                             date: predictData?.date.slice(-1)[0],
                             water_level_prediction: predictData?.water_level_predict.slice(-1)[0],

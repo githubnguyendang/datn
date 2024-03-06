@@ -26,11 +26,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _repo.RegisterAsync(dto);
             if (res == true)
             {
-                return Ok(new { message = "Đăng ký tài khoản thành công" });
+                return Ok(new { message = "Account registered successfully" });
             }
             else
             {
-                return BadRequest(new { message = "Đăng ký tài khoản thất bại, tài khoản này đã tồn tại", error = true });
+                return BadRequest(new { message = "Account registration failed, this account already exists", error = true });
             }
 
         }
@@ -42,24 +42,23 @@ namespace FloodForecastAPI.Controllers
             var res = await _repo.LoginAsync(dto);
             if (string.IsNullOrEmpty(res))
             {
-                return BadRequest(new { message = "Thông tin tài khoản hoặc mật khẩu không chính xác", error = true });
+                return BadRequest(new { message = "Account information or password is incorrect", error = true });
             }
             return Ok(res);
         }
 
         [HttpPost]
         [Route("change-password")]
-        public async Task<ActionResult<AspNetUsers>> UpdatePassword(string currentPassword, string newPassword, string newConfirmPassword)
+        public async Task<ActionResult<AspNetUsers>> UpdatePassword(PasswordChange password)
         {
-            var res = await _repo.UpdatePasswordAsync(currentPassword, newPassword, newConfirmPassword);
-            if (res == true)
+            var res = await _repo.UpdatePasswordAsync(password);
+            if (res.Message != null)
             {
-                return Ok(new { message = "Đổi mật khẩu thành công" });
+                return Ok(new { message = res.Message, succeeded = res.Succeeded });
             }
             else
             {
-                //return BadRequest(new { message = "Đổi mật khẩu thất bại", error = true });
-                return BadRequest(new { message = "Đổi mật khẩu thất bại", error = true, data = new { currentPassword, newPassword, newConfirmPassword } });
+                return BadRequest(new { message = "Password change failed", error = true, res });
             }
         }
 
@@ -70,11 +69,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _repo.SetPasswordAsync(dto, newPassword);
             if (res == true)
             {
-                return Ok(new { message = "Đặt mật khẩu thành công" });
+                return Ok(new { message = "Set password successfully" });
             }
             else
             {
-                return BadRequest(new { message = "Đặt mật khẩu thất bại", error = true });
+                return BadRequest(new { message = "Setting password failed", error = true });
             }
         }
 
@@ -85,11 +84,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _repo.AssignRoleAsync(dto);
             if (res == true)
             {
-                return Ok(new { message = "Dữ liệu đã được lưu" });
+                return Ok(new { message = "Assign roles successfully" });
             }
             else
             {
-                return BadRequest(new { message = "Lỗi lưu dữ liệu", error = true });
+                return BadRequest(new { message = "Role assignment failed", error = true });
             }
 
         }
@@ -103,11 +102,11 @@ namespace FloodForecastAPI.Controllers
 
             if (res == true)
             {
-                return Ok(new { message = "Dữ liệu đã được xóa" });
+                return Ok(new { message = "Remove roles successfully" });
             }
             else
             {
-                return Ok(new { message = "Lỗi xóa dữ liệu", error = true });
+                return Ok(new { message = "Remove roles failed", error = true });
             }
         }
 

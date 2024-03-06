@@ -40,11 +40,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.SaveAsync(dto);
             if (res > 0)
             {
-                return Ok(new { message = "Station: Saved successfully", id = res });
+                return Ok(new { message = "Saved station successfully", id = res });
             }
             else
             {
-                return BadRequest(new { message = "Station: Error saving data", error = true });
+                return BadRequest(new { message = "Saving station failed", error = true });
             }
         }
 
@@ -55,11 +55,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.DeleteAsync(Id);
             if (res == true)
             {
-                return Ok(new { message = "Station: Deleted successfully" });
+                return Ok(new { message = "Station successfully deleted" });
             }
             else
             {
-                return BadRequest(new { message = "Station: Error deleting data", error = true });
+                return BadRequest(new { message = "Removing Station failed", error = true });
             }
         }
     }

@@ -54,11 +54,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.SaveDashboardAsync(moddel);
             if (res == true)
             {
-                return Ok(new { message = "Màn hình chức năng: Dữ liệu đã được lưu" });
+                return Ok(new { message = "Saved dashboards successfully" });
             }
             else
             {
-                return BadRequest(new { message = "Màn hình chức năng: Lỗi lưu dữ liệu", error = true });
+                return BadRequest(new { message = "Save dashboards failed", error = true });
             }
         }
 
@@ -69,11 +69,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.DeleteDashboardAsync(Id);
             if (res == true)
             {
-                return Ok(new { message = "Màn hình chức năng: Dữ liệu đã được xóa" });
+                return Ok(new { message = "Dashboard successfully deleted" });
             }
             else
             {
-                return BadRequest(new { message = "Màn hình chức năng: Lỗi xóa dữ liệu", error = true });
+                return BadRequest(new { message = "Removing Dashboard failed", error = true });
             }
         }
     }

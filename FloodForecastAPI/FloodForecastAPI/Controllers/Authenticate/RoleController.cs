@@ -38,11 +38,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.SaveRoleAsync(model);
             if (res == true)
             {
-                return Ok(new { message = "Role: Dữ liệu đã được lưu" });
+                return Ok(new { message = "Saved role successfully" });
             }
             else
             {
-                return BadRequest(new { message = "Role: Lỗi lưu dữ liệu", error = true });
+                return BadRequest(new { message = "Save role failed", error = true });
             }
         }
 
@@ -53,11 +53,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.DeleteRoleAsync(roleId);
             if (res == true)
             {
-                return Ok(new { message = "Role: Dữ liệu đã được xóa" });
+                return Ok(new { message = "Role successfully deleted" });
             }
             else
             {
-                return BadRequest(new { message = "Role: Lỗi xóa dữ liệu", error = true });
+                return BadRequest(new { message = "Removing role failed", error = true });
             }
         }
     }

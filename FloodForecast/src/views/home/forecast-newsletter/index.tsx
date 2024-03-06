@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import dayjs from 'dayjs';
 import { Description } from '@mui/icons-material';
 import { Page, Text, View, Document, StyleSheet, PDFViewer, Font, Image } from '@react-pdf/renderer';
@@ -112,16 +112,18 @@ const ForecastNewsletterContent: React.FC<ForecastNewsletterContentProps> = ({ d
 
 interface ForecastNewsletterProps {
     data?: any;
+    disabled?: boolean;
+    loading?: boolean;
     onClick?: () => void;
 }
 
-const ForecastNewsletter: React.FC<ForecastNewsletterProps> = ({ data, onClick }) => {
+const ForecastNewsletter: React.FC<ForecastNewsletterProps> = ({ data, onClick, disabled, loading }) => {
     const formTitle = ``;
 
     return (
         <DialogControlShowPDF>
             {(openDialogs: (content: React.ReactNode, title: React.ReactNode) => void) => (
-                <Button variant='outlined' endIcon={<Description />} onClick={
+                <Button variant='outlined' disabled={disabled} endIcon={loading ? <CircularProgress size={15} /> : <Description />} onClick={
                     () => {
                         if (onClick) {
                             onClick(); // Only call onClick if it's defined

@@ -40,7 +40,7 @@ const DialogControlShowPDF = ({ children }: DialogControlProps) => {
         {dialogContent && (
           <>
             <AppBar sx={{ position: 'relative' }}>
-              <Toolbar>
+              <Toolbar sx={{ height: 45, minHeight: 45 }}>
                 <Typography sx={{ ml: 2, flex: 1, color: `#fff` }} variant="h6" component="div">
                   {dialogTitle}
                 </Typography>

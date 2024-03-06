@@ -39,11 +39,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.SavePermissionAsync(dto);
             if (res == true)
             {
-                return Ok(new { message = "Quyền hạn: Đã được thêm" });
+                return Ok(new { message = "Saved permission successfully" });
             }
             else
             {
-                return BadRequest(new { message = "Quyền hạn: Lỗi", error = true });
+                return BadRequest(new { message = "Save permission failed", error = true });
             }
         }
 
@@ -54,11 +54,11 @@ namespace FloodForecastAPI.Controllers
             var res = await _service.DeletePermissionAsync(dto);
             if (res == true)
             {
-                return Ok(new { message = "Quyền hạn: Dữ liệu đã được xóa" });
+                return Ok(new { message = "Permission successfully deleted" });
             }
             else
             {
-                return BadRequest(new { message = "Quyền hạn: Lỗi xóa dữ liệu", error = true });
+                return BadRequest(new { message = "Removing permissions failed", error = true });
             }
         }
     }

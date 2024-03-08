@@ -72,7 +72,7 @@ interface FormWaterLevelDataProps {
 }
 
 const FormWaterLevelData: React.FC<FormWaterLevelDataProps> = ({ isEdit, data, station, setPostSuccess }) => {
-    const formTitle = isEdit ? 'Sửa thông tin lưu vực' : 'Thêm mới thông tin lưu vực';
+    const formTitle = isEdit ? 'Sửa thông tin dữ liệu thực đo' : 'Thêm mới thông tin dữ liệu thực đo';
 
     return (
         <DialogsControl>

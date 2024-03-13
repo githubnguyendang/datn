@@ -1,6 +1,6 @@
 import { Autocomplete, CircularProgress, Grid, TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { getData } from 'src/api/axios';
@@ -42,8 +42,7 @@ const WaterLevelDataFieldset: React.FC<WaterLevelDataProps> = ({ data, station, 
         }
     }, [data]);
 
-    const handleChange = (prop: keyof WaterLevelDataState) => (event: ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    const handleChange = (prop: keyof WaterLevelDataState, value: any) => {
         setWaterLevelData({ ...WaterLevelData, [prop]: value });
         onChange({ ...WaterLevelData, [prop]: value });
     };
@@ -90,17 +89,17 @@ const WaterLevelDataFieldset: React.FC<WaterLevelDataProps> = ({ data, station, 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                         value={dayjs(WaterLevelData.date)}
-                        onChange={(newdate: any) => handleChange('date')(newdate.toDate())}
+                        onChange={(newdate: any) => handleChange('date', newdate.toDate())}
                         slotProps={{ textField: { size: 'small', fullWidth: true } }}
                         label='Ngày'
                         format="DD/MM/YYYY" />
                 </LocalizationProvider>
             </Grid>
             <Grid item xs={6} md={6} sm={6} sx={{ my: 2 }}>
-                <TextField size='small' type='text' label='Mực nước(cm)' fullWidth required placeholder='' defaultValue={WaterLevelData?.water_level} onChange={handleChange('water_level')} />
+                <TextField size='small' type='text' label='Mực nước(cm)' fullWidth required placeholder='' defaultValue={WaterLevelData?.water_level} onChange={(e: any) => handleChange('water_level', e.target.value)} />
             </Grid>
             <Grid item xs={6} md={6} sm={6} sx={{ my: 2 }}>
-                <TextField size='small' type='text' label='Lượng mưa(mm)' fullWidth required placeholder='' defaultValue={WaterLevelData?.amount_rain} onChange={handleChange('amount_rain')} />
+                <TextField size='small' type='text' label='Lượng mưa(mm)' fullWidth required placeholder='' defaultValue={WaterLevelData?.amount_rain} onChange={(e: any) => handleChange('amount_rain', e.target.value)} />
             </Grid>
         </Grid>
 

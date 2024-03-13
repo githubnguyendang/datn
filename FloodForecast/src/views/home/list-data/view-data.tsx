@@ -115,7 +115,7 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
         legend: {
             show: true,
             position: 'top',
-            horizontalAlign: 'right',
+            horizontalAlign: 'left',
             tooltipHoverFormatter: function (val: any, opts: any) {
                 return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
             },
@@ -208,7 +208,7 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
 
     const series = [
         {
-            name: "Mực nước",
+            name: "Mực nước thực đo",
             data: predictData.water_level
         },
         {
@@ -216,8 +216,6 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
             data: predictData.water_level_predict
         },
     ];
-
-    console.log(resetData)
 
     return (
         <Grid container spacing={4}>

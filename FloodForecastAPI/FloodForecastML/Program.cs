@@ -100,8 +100,8 @@ namespace FloodForecasting
             var predictionFunction = mlContext.Model.CreatePredictionEngine<FloodData, WaterLevelPrediction>(modelsaved);
             var floodPrediction = predictionFunction.Predict(new FloodData()
             {
-                station_id = 2,
-                date = new DateTime(2024, 02, 27), // ví dụ ngày cụ thể
+                station_id = 2, // giá trị mẫu
+                date = new DateTime(2024, 02, 27), // giá trị mẫu
                 water_level = 3016.2f, // giá trị mẫu
                 amount_rain = 36.3f  // giá trị mẫu
             });

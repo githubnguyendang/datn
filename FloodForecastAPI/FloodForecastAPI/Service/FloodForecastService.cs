@@ -44,7 +44,7 @@ namespace FloodForecastAPI.Services
                     water_level = (float)item.water_level,
                     amount_rain = (float)item.amount_rain
                 });
-                water_level_predict.Add((float?)Math.Round(prediction.PredictedWaterLevel, 2));
+                water_level_predict.Add(null);
             }
 
 
@@ -63,7 +63,8 @@ namespace FloodForecastAPI.Services
                     water_level = (float)(float?)lastData.water_level, // Use the last known water level
                     amount_rain = amount_rain
                 });
-
+                water_level_predict.RemoveAt(0);
+                water_level_predict.Add((float?)wl_data.LastOrDefault().water_level);
                 water_level_predict.Add((float?)Math.Round(nextDayPrediction.PredictedWaterLevel, 2));
             }
 

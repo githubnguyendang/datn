@@ -70,11 +70,11 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
                     });
                 }
             });
-        }, 1500);
+        }, 2000);
         setTimeout(() => {
             setCreateReport(false)
             setLoading(false)
-        }, 2000);
+        }, 2500);
     }
 
     //For chart
@@ -116,8 +116,9 @@ const ForceastAndReport: React.FC<ForceastAndReportProps> = (props: ForceastAndR
             show: true,
             position: 'top',
             horizontalAlign: 'left',
+            fontSize: '16px',
             tooltipHoverFormatter: function (val: any, opts: any) {
-                return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + ''
+                return val + ' - ' + opts.w.globals.series[opts.seriesIndex][opts.dataPointIndex] + '<br />'
             },
         },
         xaxis: {

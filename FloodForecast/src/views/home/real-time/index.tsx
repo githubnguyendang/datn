@@ -19,7 +19,7 @@ const RealTime = () => {
 
   return (
     <Paper elevation={3} sx={{ py: 1, px: 3 }}>
-      <Typography variant='body2'>THỐNG KÊ DỮ LIỆU TÀI NGUYÊN NƯỚC ({formattedTime}) </Typography>
+      <Typography variant='body2'>THỐNG KÊ DỮ LIỆU CHO ĐẾN ({formattedTime}) </Typography>
     </Paper>
   );
 

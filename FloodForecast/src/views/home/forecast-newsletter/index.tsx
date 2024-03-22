@@ -67,17 +67,17 @@ const ForecastNewsletterContent: React.FC<ForecastNewsletterContentProps> = ({ d
                 <Page size="A4" style={styles.page} fixed>
                     <View style={styles.header}>
                         <View style={styles.headerLeft} >
-                            <Text style={[styles.bold]}>UBND Tỉnh Quảng Ngãi</Text>
+                            <Text style={[styles.bold]}>UBND Tỉnh .....................</Text>
                             <Text >SỞ TÀI NGUYÊN VÀ MÔI TRƯỜNG</Text>
                             <Text style={{ fontSize: 10 }} >Số:.........../STNMT-TNN-KS&KTTV</Text>
                         </View>
                         <View style={styles.headerRight}>
                             <Text >CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</Text>
                             <Text style={styles.bold}>Độc lập - Tự do - Hạnh phúc</Text>
-                            <Text >Quảng Ngãi, ngày {dayjs().date()}, tháng {dayjs().month() + 1}, năm {dayjs().year()}</Text>
+                            <Text >..........., ngày {dayjs().date()}, tháng {dayjs().month() + 1}, năm {dayjs().year()}</Text>
                         </View>
                     </View>
-                    <Text style={styles.title}>BÁO CÁO DỰ BÁO LŨ LỤT</Text>
+                    <Text style={styles.title}>BÁO CÁO KẾT QUẢ DỰ BÁO MỰC NƯỚC LŨ</Text>
                     <View style={styles.body}>
                         <Text>Dự báo tại {data.station.name}, thuộc sông Trà Khúc, tỉnh Quảng Ngãi</Text>
                         <Text>Ngày: {data.date}</Text>
